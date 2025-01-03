@@ -124,7 +124,7 @@ async function importGen(gen: GenerationNum, index: string) {
 	return data;
 }
 
-function eligible(dex: ModdedDex, id: ID) {
+function eligible(dex: ModdedDb, id: ID) {
 	const gen = toGen(dex, id);
 	if (!gen || gen > dex.gen) return false;
 
@@ -145,7 +145,7 @@ function eligible(dex: ModdedDex, id: ID) {
 }
 
 // TODO: Fix dex data such that CAP mons have a correct gen set
-function toGen(dex: ModdedDex, name: string): GenerationNum | undefined {
+function toGen(dex: ModdedDb, name: string): GenerationNum | undefined {
 	const pokemon = dex.species.get(name);
 	if (pokemon.isNonstandard === 'LGPE') return 7;
 	if (!pokemon.exists || (pokemon.isNonstandard && pokemon.isNonstandard !== 'CAP')) return undefined;
@@ -217,7 +217,7 @@ async function importSmogonSets(
 }
 
 function addSmogonSet(
-	dex: ModdedDex,
+	dex: ModdedDb,
 	format: Format,
 	pokemon: string,
 	name: string,
@@ -237,7 +237,7 @@ function cleanName(name: string) {
 	return name.replace(/"/g, `'`);
 }
 
-function movesetToPokemonSet(dex: ModdedDex, format: Format, pokemon: string, set: smogon.Moveset) {
+function movesetToPokemonSet(dex: ModdedDb, format: Format, pokemon: string, set: smogon.Moveset) {
 	const level = getLevel(format, set.levels[0]);
 	return {
 		level: level === 100 ? undefined : level,
@@ -263,7 +263,7 @@ function toStatsTable(stats?: StatsTable, elide = 0) {
 	return s;
 }
 
-function fixedAbility(dex: ModdedDex, pokemon: string, ability?: string) {
+function fixedAbility(dex: ModdedDb, pokemon: string, ability?: string) {
 	if (dex.gen <= 2) return undefined;
 	const species = dex.species.get(pokemon);
 	if (ability && !['Mega', 'Primal', 'Ultra'].some(f => species.forme.startsWith(f))) return ability;
@@ -272,7 +272,7 @@ function fixedAbility(dex: ModdedDex, pokemon: string, ability?: string) {
 
 function validSet(
 	source: string,
-	dex: ModdedDex,
+	dex: ModdedDb,
 	format: Format,
 	pokemon: string,
 	name: string,
@@ -301,7 +301,7 @@ function validSet(
 	return false;
 }
 
-function skip(dex: ModdedDex, format: Format, pokemon: string, set: DeepPartial<PokemonSet>) {
+function skip(dex: ModdedDb, format: Format, pokemon: string, set: DeepPartial<PokemonSet>) {
 	const {gen} = FORMATS.get(format.id)!;
 	const hasMove = (m: string) => set.moves && set.moves.includes(m);
 	const bh = format.id.includes('balancedhackmons');
@@ -327,7 +327,7 @@ function skip(dex: ModdedDex, format: Format, pokemon: string, set: DeepPartial<
 }
 
 function toPokemonSet(
-	dex: ModdedDex,
+	dex: ModdedDb,
 	format: Format,
 	pokemon: string,
 	set: DeepPartial<PokemonSet>,
@@ -343,15 +343,15 @@ function toPokemonSet(
 				set.hpType = type;
 				fill = 31;
 			} else if (dex.gen === 2) {
-				const dvs = {...dex.types.get(type).HPdvs};
-				let stat: StatID;
+				const dvs = {...dex.types.get(type).Healthdvs};
+				let stat: AttributeID;
 				for (stat in dvs) {
 					dvs[stat]! *= 2;
 				}
 				set.ivs = {...dvs, ...set.ivs};
 				set.ivs.hp = expectedHP(set.ivs);
 			} else {
-				set.ivs = {...dex.types.get(type).HPivs, ...set.ivs};
+				set.ivs = {...dex.types.get(type).Healthivs, ...set.ivs};
 			}
 		}
 	}

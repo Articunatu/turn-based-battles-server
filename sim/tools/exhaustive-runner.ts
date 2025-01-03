@@ -203,7 +203,7 @@ class TeamGenerator {
 		this.pools = pools;
 		this.signatures = signatures;
 
-		this.natures = Object.keys(this.dex.data.Natures);
+		this.natures = Object.keys(this.dex.data.Roles);
 	}
 
 	get exhausted() {

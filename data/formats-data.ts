@@ -5628,7 +5628,7 @@ export const FormatsData: import('../sim/dex-species').SpeciesFormatsDataTable =
 		doublesTier: "DOU",
 		natDexTier: "OU",
 	},
-	hydrapple: {
+	fuldraken: {
 		tier: "UU",
 		doublesTier: "(DUU)",
 		natDexTier: "UU",

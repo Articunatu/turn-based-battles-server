@@ -201,7 +201,7 @@ export class RuleTable extends Map<string, string> {
 	}
 
 	/** After a RuleTable has been filled out, resolve its hardcoded numeric properties */
-	resolveNumbers(format: Format, dex: ModdedDex) {
+	resolveNumbers(format: Format, dex: ModdedDb) {
 		const gameTypeMinTeamSize = ['triples', 'rotation'].includes(format.gameType as 'triples') ? 3 :
 			format.gameType === 'doubles' ? 2 :
 			1;
@@ -384,7 +384,7 @@ export class Format extends BasicEffect implements Readonly<BasicEffect> {
 	 */
 	declare readonly hasValue?: boolean | 'integer' | 'positive-integer';
 	declare readonly onValidateRule?: (
-		this: {format: Format, ruleTable: RuleTable, dex: ModdedDex}, value: string
+		this: {format: Format, ruleTable: RuleTable, dex: ModdedDb}, value: string
 	) => string | void;
 	/** ID of rule that can't be combined with this rule */
 	declare readonly mutuallyExclusiveWith?: string;
@@ -404,14 +404,14 @@ export class Format extends BasicEffect implements Readonly<BasicEffect> {
 		this: TeamValidator, move: Move, species: Species, setSources: PokemonSources, set: PokemonSet
 	) => string | null;
 	declare readonly getEvoFamily?: (this: Format, speciesid: string) => ID;
-	declare readonly getSharedPower?: (this: Format, pokemon: Pokemon) => Set<string>;
-	declare readonly getSharedItems?: (this: Format, pokemon: Pokemon) => Set<string>;
+	declare readonly getSharedPower?: (this: Format, pokemon: Character) => Set<string>;
+	declare readonly getSharedItems?: (this: Format, pokemon: Character) => Set<string>;
 	declare readonly onChangeSet?: (
 		this: TeamValidator, set: PokemonSet, format: Format, setHas?: AnyObject, teamHas?: AnyObject
 	) => string[] | void;
 	declare readonly onModifySpeciesPriority?: number;
 	declare readonly onModifySpecies?: (
-		this: Battle, species: Species, target?: Pokemon, source?: Pokemon, effect?: Effect
+		this: Battle, species: Species, target?: Character, source?: Character, effect?: Effect
 	) => Species | void;
 	declare readonly onBattleStart?: (this: Battle) => void;
 	declare readonly onTeamPreview?: (this: Battle) => void;
@@ -509,11 +509,11 @@ function mergeFormatLists(main: FormatList, custom: FormatList | undefined): For
 }
 
 export class DexFormats {
-	readonly dex: ModdedDex;
+	readonly dex: ModdedDb;
 	rulesetCache = new Map<ID, Format>();
 	formatsListCache: readonly Format[] | null;
 
-	constructor(dex: ModdedDex) {
+	constructor(dex: ModdedDb) {
 		this.dex = dex;
 		this.formatsListCache = null;
 	}
@@ -930,9 +930,9 @@ export class DexFormats {
 			switch (matchType) {
 			case 'pokemon': table = this.dex.data.Pokedex; break;
 			case 'move': table = this.dex.data.Moves; break;
-			case 'item': table = this.dex.data.Items; break;
+			case 'item': table = this.dex.data.Equipments; break;
 			case 'ability': table = this.dex.data.Abilities; break;
-			case 'nature': table = this.dex.data.Natures; break;
+			case 'nature': table = this.dex.data.Roles; break;
 			case 'pokemontag':
 				// valid pokemontags
 				const validTags = [

@@ -162,7 +162,7 @@ export const Teams = new class Teams {
 			// ivs
 			let ivs = '|';
 			if (set.ivs) {
-				ivs = '|' + getIv(set.ivs, 'hp') + ',' + getIv(set.ivs, 'atk') + ',' + getIv(set.ivs, 'def') +
+				ivs = '|' + getIv(set.ivs, 'hp') + ',' + getIv(set.ivs, 'strength') + ',' + getIv(set.ivs, 'toughness') +
 					',' + getIv(set.ivs, 'spa') + ',' + getIv(set.ivs, 'spd') + ',' + getIv(set.ivs, 'spe');
 			}
 			if (ivs === '|,,,,,') {
@@ -530,9 +530,9 @@ export const Teams = new class Teams {
 				line = 'Hidden Power ' + hpType;
 				if (!set.ivs && Dex.types.isName(hpType)) {
 					set.ivs = {hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31};
-					const hpIVs = Dex.types.get(hpType).HPivs || {};
+					const hpIVs = Dex.types.get(hpType).Healthivs || {};
 					for (const statid in hpIVs) {
-						set.ivs[statid as StatID] = hpIVs[statid as StatID]!;
+						set.ivs[statid as AttributeID] = hpIVs[statid as AttributeID]!;
 					}
 				}
 			}
@@ -559,14 +559,14 @@ export const Teams = new class Teams {
 					const evs = {hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0};
 					if (set.evs) {
 						for (const statid in evs) {
-							if (typeof set.evs[statid] === 'number') evs[statid as StatID] = set.evs[statid];
+							if (typeof set.evs[statid] === 'number') evs[statid as AttributeID] = set.evs[statid];
 						}
 					}
 					set.evs = evs;
 					const ivs = {hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31};
 					if (set.ivs) {
 						for (const statid in ivs) {
-							if (typeof set.ivs[statid] === 'number') ivs[statid as StatID] = set.ivs[statid];
+							if (typeof set.ivs[statid] === 'number') ivs[statid as AttributeID] = set.ivs[statid];
 						}
 					}
 					set.ivs = ivs;

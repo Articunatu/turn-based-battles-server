@@ -1,33 +1,25 @@
 // Data for computer-generated teams
 
-export const MOVE_PAIRINGS: {[moveID: IDEntry]: IDEntry} = {
-	rest: 'sleeptalk',
-	sleeptalk: 'rest',
+export const ATTACK_PAIRINGS: {[attackID: IDEntry]: IDEntry} = {
+	// rest: 'sleeptalk',
+	// sleeptalk: 'rest',
 };
 
 // Bonuses to move ratings by ability
-export const ABILITY_MOVE_BONUSES: {[abilityID: IDEntry]: {[moveID: IDEntry]: number}} = {
-	drought: {sunnyday: 0.2, solarbeam: 2},
-	contrary: {terablast: 2},
+export const SPECIALITY_ATTACK_BONUSES: {[specialityID: IDEntry]: {[attackID: IDEntry]: number}} = {
+	// drought: {sunnyday: 0.2, solarbeam: 2},
+	// contrary: {terablast: 2},
 };
 // Bonuses to move ratings by move type
-export const ABILITY_MOVE_TYPE_BONUSES: {[abilityID: IDEntry]: {[typeName: string]: number}} = {
-	darkaura: {Dark: 1.33},
-	dragonsmaw: {Dragon: 1.5},
-	fairyaura: {Fairy: 1.33},
-	steelworker: {Steel: 1.5},
-	steelyspirit: {Steel: 1.5},
-	transistor: {Electric: 1.3},
+export const SPECIALITY_ATTACK_ELEMENT_BONUSES: {[abilityID: IDEntry]: {[typeName: string]: number}} = {
+	// darkaura: {Dark: 1.33},
+	// dragonsmaw: {Dragon: 1.5},
 
-	// -ate moves
-	pixilate: {Normal: 1.5 * 1.2},
-	refrigerate: {Normal: 1.5 * 1.2},
-	aerilate: {Normal: 1.5 * 1.2},
-	normalize: {Normal: 1.2},
+	// // -ate moves
+	// pixilate: {Normal: 1.5 * 1.2},
 
-	// weather
-	drizzle: {Water: 1.4, Fire: 0.6},
-	drought: {Fire: 1.4, Water: 0.6},
+	// // weather
+	// drizzle: {Water: 1.4, Fire: 0.6},
 };
 // For moves whose quality isn't obvious from data
 // USE SPARINGLY!
@@ -68,5 +60,5 @@ export const HARDCODED_MOVE_WEIGHTS: {[moveID: IDEntry]: number} = {
 	steelroller: 0.1,
 };
 
-export const WEIGHT_BASED_MOVES = ['heatcrash', 'heavyslam', 'lowkick', 'grassknot'];
-export const TARGET_HP_BASED_MOVES = ['crushgrip', 'hardpress'];
+export const WEIGHT_BASED_ATTACKS = ['heatcrash', 'heavyslam', 'lowkick', 'grassknot'];
+export const TARGET_HEALTH_BASED_ATTACKS = ['crushgrip', 'hardpress'];

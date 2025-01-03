@@ -16,7 +16,7 @@ export const Scripts: ModdedBattleScriptsData = {
 		inherit: true,
 		// This is run on Stadium after boosts and status changes.
 		recalculateStats() {
-			let statName: StatIDExceptHP;
+			let statName: AttributeIdExceptHealth;
 			for (statName in this.storedStats) {
 				let stat = this.species.baseStats[statName];
 				stat = Math.floor(
@@ -657,8 +657,8 @@ export const Scripts: ModdedBattleScriptsData = {
 			const defender = move.overrideDefensivePokemon === 'source' ? source : target;
 
 			const isPhysical = move.category === 'Physical';
-			const atkType: StatIDExceptHP = move.overrideOffensiveStat || (isPhysical ? 'atk' : 'spa');
-			const defType: StatIDExceptHP = move.overrideDefensiveStat || (isPhysical ? 'def' : 'spd');
+			const atkType: AttributeIdExceptHealth = move.overrideOffensiveStat || (isPhysical ? 'atk' : 'spa');
+			const defType: AttributeIdExceptHealth = move.overrideDefensiveStat || (isPhysical ? 'def' : 'spd');
 
 			let attack = attacker.getStat(atkType);
 			let defense = defender.getStat(defType);

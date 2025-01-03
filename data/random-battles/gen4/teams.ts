@@ -753,8 +753,8 @@ export class RandomGen4Teams extends RandomGen5Teams {
 				if (move.startsWith('hiddenpower')) hpType = move.substr(11);
 			}
 			if (!hpType) throw new Error(`hasHiddenPower is true, but no Hidden Power move was found.`);
-			const HPivs = this.dex.types.get(hpType).HPivs;
-			let iv: StatID;
+			const HPivs = this.dex.types.get(hpType).Healthivs;
+			let iv: AttributeID;
 			for (iv in HPivs) {
 				ivs[iv] = HPivs[iv]!;
 			}

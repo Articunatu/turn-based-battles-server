@@ -5777,7 +5777,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 		isNonstandard: "Future",
 		tier: "Illegal",
 	},
-	hydrapple: {
+	fuldraken: {
 		isNonstandard: "Future",
 		tier: "Illegal",
 	},

@@ -1,108 +1,48 @@
 import type {PokemonEventMethods, ConditionData} from './dex-conditions';
 import {BasicEffect, toID} from './dex-data';
 
-interface FlingData {
-	basePower: number;
-	status?: string;
-	volatileStatus?: string;
-	effect?: CommonHandlers['ResultMove'];
-}
-
-export interface ItemData extends Partial<Item>, PokemonEventMethods {
+export interface EquipmentData extends Partial<Equipment>, PokemonEventMethods {
 	name: string;
 }
 
-export type ModdedItemData = ItemData | Partial<Omit<ItemData, 'name'>> & {
+export type ModdedEquipmentData = EquipmentData | Partial<Omit<EquipmentData, 'name'>> & {
 	inherit: true,
-	onCustap?: (this: Battle, pokemon: Pokemon) => void,
+	onCustap?: (this: Battle, character: Character) => void,
 };
 
-export interface ItemDataTable {[itemid: IDEntry]: ItemData}
-export interface ModdedItemDataTable {[itemid: IDEntry]: ModdedItemData}
+export interface ItemDataTable {[itemid: IDEntry]: EquipmentData}
+export interface ModdedItemDataTable {[itemid: IDEntry]: ModdedEquipmentData}
 
-export class Item extends BasicEffect implements Readonly<BasicEffect> {
+export class Equipment extends BasicEffect implements Readonly<BasicEffect> {
 	declare readonly effectType: 'Item';
 
 	/** just controls location on the item spritesheet */
 	declare readonly num: number;
 
-	/**
-	 * A Move-like object depicting what happens when Fling is used on
-	 * this item.
-	 */
-	readonly fling?: FlingData;
-	/**
-	 * If this is a Drive: The type it turns Techno Blast into.
-	 * undefined, if not a Drive.
-	 */
-	readonly onDrive?: string;
-	/**
-	 * If this is a Memory: The type it turns Multi-Attack into.
-	 * undefined, if not a Memory.
-	 */
-	readonly onMemory?: string;
-	/**
-	 * If this is a mega stone: The name (e.g. Charizard-Mega-X) of the
-	 * forme this allows transformation into.
-	 * undefined, if not a mega stone.
-	 */
-	readonly megaStone?: string;
-	/**
-	 * If this is a mega stone: The name (e.g. Charizard) of the
-	 * forme this allows transformation from.
-	 * undefined, if not a mega stone.
-	 */
-	readonly megaEvolves?: string;
-	/**
-	 * If this is a Z crystal: true if the Z Crystal is generic
-	 * (e.g. Firium Z). If species-specific, the name
-	 * (e.g. Inferno Overdrive) of the Z Move this crystal allows
-	 * the use of.
-	 * undefined, if not a Z crystal.
-	 */
-	readonly zMove?: true | string;
-	/**
-	 * If this is a generic Z crystal: The type (e.g. Fire) of the
-	 * Z Move this crystal allows the use of (e.g. Fire)
-	 * undefined, if not a generic Z crystal
-	 */
-	readonly zMoveType?: string;
-	/**
-	 * If this is a species-specific Z crystal: The name
-	 * (e.g. Play Rough) of the move this crystal requires its
-	 * holder to know to use its Z move.
-	 * undefined, if not a species-specific Z crystal
-	 */
-	readonly zMoveFrom?: string;
-	/**
-	 * If this is a species-specific Z crystal: An array of the
-	 * species of Pokemon that can use this crystal's Z move.
-	 * Note that these are the full names, e.g. 'Mimikyu-Busted'
-	 * undefined, if not a species-specific Z crystal
-	 */
-	readonly itemUser?: string[];
-	/** Is this item a Berry? */
-	readonly isBerry: boolean;
-	/** Whether or not this item ignores the Klutz ability. */
-	readonly ignoreKlutz: boolean;
-	/** The type the holder will change into if it is an Arceus. */
-	readonly onPlate?: string;
-	/** Is this item a Gem? */
-	readonly isGem: boolean;
-	/** Is this item a Pokeball? */
-	readonly isPokeball: boolean;
+	readonly transform?: string;
+
+	readonly tranforms?: string;
+
+	readonly ultimate?: true | string;
+
+	readonly ultimateElement?: string;
+
+	readonly ultimateSpecial?: string;
+
+	readonly equipmentCharacter?: string[];
+	readonly isConsumable: boolean;
+	readonly isAttackBooster: boolean;
 
 	declare readonly condition?: ConditionData;
 	declare readonly forcedForme?: string;
-	declare readonly isChoice?: boolean;
-	declare readonly naturalGift?: {basePower: number, type: string};
+	declare readonly isLocked?: boolean;
 	declare readonly spritenum?: number;
 	declare readonly boosts?: SparseBoostsTable | false;
 
-	declare readonly onEat?: ((this: Battle, pokemon: Pokemon) => void) | false;
-	declare readonly onPrimal?: (this: Battle, pokemon: Pokemon) => void;
-	declare readonly onStart?: (this: Battle, target: Pokemon) => void;
-	declare readonly onEnd?: (this: Battle, target: Pokemon) => void;
+	declare readonly onConsume?: ((this: Battle, character: Character) => void) | false;
+	declare readonly onPrimal?: (this: Battle, character: Character) => void;
+	declare readonly onStart?: (this: Battle, target: Character) => void;
+	declare readonly onEnd?: (this: Battle, target: Character) => void;
 
 	constructor(data: AnyObject) {
 		super(data);
@@ -111,59 +51,27 @@ export class Item extends BasicEffect implements Readonly<BasicEffect> {
 
 		this.fullname = `item: ${this.name}`;
 		this.effectType = 'Item';
-		this.fling = data.fling || undefined;
-		this.onDrive = data.onDrive || undefined;
-		this.onMemory = data.onMemory || undefined;
-		this.megaStone = data.megaStone || undefined;
-		this.megaEvolves = data.megaEvolves || undefined;
-		this.zMove = data.zMove || undefined;
-		this.zMoveType = data.zMoveType || undefined;
-		this.zMoveFrom = data.zMoveFrom || undefined;
-		this.itemUser = data.itemUser || undefined;
-		this.isBerry = !!data.isBerry;
-		this.ignoreKlutz = !!data.ignoreKlutz;
-		this.onPlate = data.onPlate || undefined;
-		this.isGem = !!data.isGem;
-		this.isPokeball = !!data.isPokeball;
-
-		if (!this.gen) {
-			if (this.num >= 1124) {
-				this.gen = 9;
-			} else if (this.num >= 927) {
-				this.gen = 8;
-			} else if (this.num >= 689) {
-				this.gen = 7;
-			} else if (this.num >= 577) {
-				this.gen = 6;
-			} else if (this.num >= 537) {
-				this.gen = 5;
-			} else if (this.num >= 377) {
-				this.gen = 4;
-			} else {
-				this.gen = 3;
-			}
-			// Due to difference in gen 2 item numbering, gen 2 items must be
-			// specified manually
-		}
-
-		if (this.isBerry) this.fling = {basePower: 10};
-		if (this.id.endsWith('plate')) this.fling = {basePower: 90};
-		if (this.onDrive) this.fling = {basePower: 70};
-		if (this.megaStone) this.fling = {basePower: 80};
-		if (this.onMemory) this.fling = {basePower: 50};
+		this.transform = data.megaStone || undefined;
+		this.tranforms = data.megaEvolves || undefined;
+		this.ultimate = data.zMove || undefined;
+		this.ultimateElement = data.zMoveType || undefined;
+		this.ultimateSpecial = data.zMoveFrom || undefined;
+		this.equipmentCharacter = data.itemUser || undefined;
+		this.isConsumable = !!data.isBerry;
+		this.isAttackBooster = !!data.isGem;
 	}
 }
 
-export class DexItems {
-	readonly dex: ModdedDex;
-	readonly itemCache = new Map<ID, Item>();
-	allCache: readonly Item[] | null = null;
+export class DbEquipments {
+	readonly db: ModdedDb;
+	readonly equipmentCache = new Map<ID, Equipment>();
+	allCache: readonly Equipment[] | null = null;
 
-	constructor(dex: ModdedDex) {
-		this.dex = dex;
+	constructor(dex: ModdedDb) {
+		this.db = dex;
 	}
 
-	get(name?: string | Item): Item {
+	get(name?: string | Equipment): Equipment {
 		if (name && typeof name !== 'string') return name;
 
 		name = (name || '').trim();
@@ -171,47 +79,47 @@ export class DexItems {
 		return this.getByID(id);
 	}
 
-	getByID(id: ID): Item {
-		let item = this.itemCache.get(id);
-		if (item) return item;
-		if (this.dex.data.Aliases.hasOwnProperty(id)) {
-			item = this.get(this.dex.data.Aliases[id]);
-			if (item.exists) {
-				this.itemCache.set(id, item);
+	getByID(id: ID): Equipment {
+		let equipment = this.equipmentCache.get(id);
+		if (equipment) return equipment;
+		if (this.db.data.Aliases.hasOwnProperty(id)) {
+			equipment = this.get(this.db.data.Aliases[id]);
+			if (equipment.exists) {
+				this.equipmentCache.set(id, equipment);
 			}
-			return item;
+			return equipment;
 		}
-		if (id && !this.dex.data.Items[id] && this.dex.data.Items[id + 'berry']) {
-			item = this.getByID(id + 'berry' as ID);
-			this.itemCache.set(id, item);
-			return item;
+		if (id && !this.db.data.Equipments[id] && this.db.data.Equipments[id + 'consume']) {
+			equipment = this.getByID(id + 'consume' as ID);
+			this.equipmentCache.set(id, equipment);
+			return equipment;
 		}
-		if (id && this.dex.data.Items.hasOwnProperty(id)) {
-			const itemData = this.dex.data.Items[id] as any;
-			const itemTextData = this.dex.getDescs('Items', id, itemData);
-			item = new Item({
+		if (id && this.db.data.Equipments.hasOwnProperty(id)) {
+			const equipmentData = this.db.data.Equipments[id] as any;
+			const equipmentTextData = this.db.getDescs('Equipments', id, equipmentData);
+			equipment = new Equipment({
 				name: id,
-				...itemData,
-				...itemTextData,
+				...equipmentData,
+				...equipmentTextData,
 			});
-			if (item.gen > this.dex.gen) {
-				(item as any).isNonstandard = 'Future';
+			if (equipment.gen > this.db.gen) {
+				(equipment as any).isNonstandard = 'Future';
 			}
 		} else {
-			item = new Item({name: id, exists: false});
+			equipment = new Equipment({name: id, exists: false});
 		}
 
-		if (item.exists) this.itemCache.set(id, this.dex.deepFreeze(item));
-		return item;
+		if (equipment.exists) this.equipmentCache.set(id, this.db.deepFreeze(equipment));
+		return equipment;
 	}
 
-	all(): readonly Item[] {
+	all(): readonly Equipment[] {
 		if (this.allCache) return this.allCache;
-		const items = [];
-		for (const id in this.dex.data.Items) {
-			items.push(this.getByID(id as ID));
+		const equipments = [];
+		for (const id in this.db.data.Equipments) {
+			equipments.push(this.getByID(id as ID));
 		}
-		this.allCache = Object.freeze(items);
+		this.allCache = Object.freeze(equipments);
 		return this.allCache;
 	}
 }

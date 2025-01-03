@@ -32,7 +32,7 @@ import * as path from 'path';
 import * as Data from './dex-data';
 import {Condition, DexConditions} from './dex-conditions';
 import {DataMove, DexMoves} from './dex-moves';
-import {Item, DexItems} from './dex-items';
+import {Equipment, DbEquipments} from './dex-items';
 import {Ability, DexAbilities} from './dex-abilities';
 import {Species, DexSpecies} from './dex-species';
 import {Format, DexFormats} from './dex-formats';
@@ -76,16 +76,16 @@ interface DexTableData {
 	Abilities: DexTable<import('./dex-abilities').AbilityData>;
 	Aliases: DexTable<string>;
 	Rulesets: DexTable<import('./dex-formats').FormatData>;
-	Items: DexTable<import('./dex-items').ItemData>;
+	Equipments: DexTable<import('./dex-items').EquipmentData>;
 	Learnsets: DexTable<import('./dex-species').LearnsetData>;
 	Moves: DexTable<import('./dex-moves').MoveData>;
-	Natures: DexTable<import('./dex-data').NatureData>;
+	Roles: DexTable<import('./dex-data').RoleData>;
 	Pokedex: DexTable<import('./dex-species').SpeciesData>;
 	FormatsData: DexTable<import('./dex-species').SpeciesFormatsData>;
 	PokemonGoData: DexTable<import('./dex-species').PokemonGoData>;
 	Scripts: DexTable<AnyObject>;
 	Conditions: DexTable<import('./dex-conditions').ConditionData>;
-	TypeChart: DexTable<import('./dex-data').TypeData>;
+	TypeChart: DexTable<import('./dex-data').ElementData>;
 }
 interface TextTableData {
 	Abilities: DexTable<AbilityText>;
@@ -101,7 +101,7 @@ export class ModdedDex {
 	readonly Data = Data;
 	readonly Condition = Condition;
 	readonly Ability = Ability;
-	readonly Item = Item;
+	readonly Item = Equipment;
 	readonly Move = DataMove;
 	readonly Species = Species;
 	readonly Format = Format;
@@ -127,13 +127,13 @@ export class ModdedDex {
 
 	readonly formats: DexFormats;
 	readonly abilities: DexAbilities;
-	readonly items: DexItems;
+	readonly items: DbEquipments;
 	readonly moves: DexMoves;
 	readonly species: DexSpecies;
 	readonly conditions: DexConditions;
-	readonly natures: Data.DexNatures;
+	readonly natures: Data.DbRoles;
 	readonly types: Data.DexTypes;
-	readonly stats: Data.DexStats;
+	readonly stats: Data.DbStats;
 
 	constructor(mod = 'base') {
 		this.isBase = (mod === 'base');
@@ -145,13 +145,13 @@ export class ModdedDex {
 
 		this.formats = new DexFormats(this);
 		this.abilities = new DexAbilities(this);
-		this.items = new DexItems(this);
+		this.items = new DbEquipments(this);
 		this.moves = new DexMoves(this);
 		this.species = new DexSpecies(this);
 		this.conditions = new DexConditions(this);
-		this.natures = new Data.DexNatures(this);
+		this.natures = new Data.DbRoles(this);
 		this.types = new Data.DexTypes(this);
-		this.stats = new Data.DexStats(this);
+		this.stats = new Data.DbStats(this);
 	}
 
 	get data(): DexTableData {
@@ -342,8 +342,8 @@ export class ModdedDex {
 			let hpPowerX = 0;
 			let i = 1;
 			for (const s in stats) {
-				hpTypeX += i * (ivs[s as StatID] % 2);
-				hpPowerX += i * (tr(ivs[s as StatID] / 2) % 2);
+				hpTypeX += i * (ivs[s as AttributeID] % 2);
+				hpPowerX += i * (tr(ivs[s as AttributeID] / 2) % 2);
 				i *= 2;
 			}
 			return {
@@ -572,7 +572,7 @@ dexes[BASE_MOD] = dexes['base'];
 export const Dex = dexes['base'];
 export namespace Dex {
 	export type Species = import('./dex-species').Species;
-	export type Item = import('./dex-items').Item;
+	export type Item = import('./dex-items').Equipment;
 	export type Move = import('./dex-moves').Move;
 	export type Ability = import('./dex-abilities').Ability;
 

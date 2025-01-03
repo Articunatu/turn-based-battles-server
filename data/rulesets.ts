@@ -465,7 +465,7 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 		],
 		onValidateSet(set, format) {
 			const blueberryDex = [
-				"Doduo", "Dodrio", "Exeggcute", "Exeggutor", "Rhyhorn", "Rhydon", "Rhyperior", "Venonat", "Venomoth", "Elekid", "Electabuzz", "Electivire", "Magby", "Magmar", "Magmortar", "Happiny", "Chansey", "Blissey", "Scyther", "Scizor", "Kleavor", "Tauros", "Blitzle", "Zebstrika", "Girafarig", "Farigiraf", "Sandile", "Krokorok", "Krookodile", "Rellor", "Rabsca", "Rufflet", "Braviary", "Vullaby", "Mandibuzz", "Litleo", "Pyroar", "Deerling", "Sawsbuck", "Smeargle", "Rotom", "Milcery", "Alcremie", "Trapinch", "Vibrava", "Flygon", "Pikipek", "Trumbeak", "Toucannon", "Tentacool", "Tentacruel", "Horsea", "Seadra", "Kingdra", "Bruxish", "Cottonee", "Whimsicott", "Comfey", "Slakoth", "Vigoroth", "Slaking", "Oddish", "Gloom", "Vileplume", "Bellossom", "Diglett", "Dugtrio", "Grimer", "Muk", "Zangoose", "Seviper", "Crabrawler", "Crabominable", "Oricorio", "Slowpoke", "Slowbro", "Slowking", "Chinchou", "Lanturn", "Inkay", "Malamar", "Luvdisc", "Finneon", "Lumineon", "Alomomola", "Torkoal", "Fletchling", "Fletchinder", "Talonflame", "Dewpider", "Araquanid", "Tyrogue", "Hitmonlee", "Hitmonchan", "Hitmontop", "Geodude", "Graveler", "Golem", "Drilbur", "Excadrill", "Gothita", "Gothorita", "Gothitelle", "Espurr", "Meowstic", "Minior", "Cranidos", "Rampardos", "Shieldon", "Bastiodon", "Minccino", "Cinccino", "Skarmory", "Swablu", "Altaria", "Magnemite", "Magneton", "Magnezone", "Plusle", "Minun", "Scraggy", "Scrafty", "Golett", "Golurk", "Numel", "Camerupt", "Sinistea", "Polteageist", "Porygon", "Porygon2", "Porygon-Z", "Joltik", "Galvantula", "Tynamo", "Eelektrik", "Eelektross", "Beldum", "Metang", "Metagross", "Axew", "Fraxure", "Haxorus", "Seel", "Dewgong", "Lapras", "Qwilfish", "Overqwil", "Solosis", "Duosion", "Reuniclus", "Snubbull", "Granbull", "Cubchoo", "Beartic", "Sandshrew", "Sandslash", "Vulpix", "Ninetales", "Snover", "Abomasnow", "Duraludon", "Archaludon", "Hydrapple", "Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard", "Squirtle", "Wartortle", "Blastoise", "Chikorita", "Bayleef", "Meganium", "Cyndaquil", "Quilava", "Typhlosion", "Totodile", "Croconaw", "Feraligatr", "Treecko", "Grovyle", "Sceptile", "Torchic", "Combusken", "Blaziken", "Mudkip", "Marshtomp", "Swampert", "Turtwig", "Grotle", "Torterra", "Chimchar", "Monferno", "Infernape", "Piplup", "Prinplup", "Empoleon", "Snivy", "Servine", "Serperior", "Tepig", "Pignite", "Emboar", "Oshawott", "Dewott", "Samurott", "Chespin", "Quilladin", "Chesnaught", "Fennekin", "Braixen", "Delphox", "Froakie", "Frogadier", "Greninja", "Rowlet", "Dartrix", "Decidueye", "Litten", "Torracat", "Incineroar", "Popplio", "Brionne", "Primarina", "Grookey", "Thwackey", "Rillaboom", "Scorbunny", "Raboot", "Cinderace", "Sobble", "Drizzile", "Inteleon", "Gouging Fire", "Raging Bolt", "Iron Crown", "Iron Boulder", "Terapagos", "Walking Wake", "Iron Leaves",
+				"Doduo", "Dodrio", "Exeggcute", "Exeggutor", "Rhyhorn", "Rhydon", "Rhyperior", "Venonat", "Venomoth", "Elekid", "Electabuzz", "Electivire", "Magby", "Magmar", "Magmortar", "Happiny", "Chansey", "Blissey", "Scyther", "Scizor", "Kleavor", "Tauros", "Blitzle", "Zebstrika", "Girafarig", "Farigiraf", "Sandile", "Krokorok", "Krookodile", "Rellor", "Rabsca", "Rufflet", "Braviary", "Vullaby", "Mandibuzz", "Litleo", "Pyroar", "Deerling", "Sawsbuck", "Smeargle", "Rotom", "Milcery", "Alcremie", "Trapinch", "Vibrava", "Flygon", "Pikipek", "Trumbeak", "Toucannon", "Tentacool", "Tentacruel", "Horsea", "Seadra", "Kingdra", "Bruxish", "Cottonee", "Whimsicott", "Comfey", "Slakoth", "Vigoroth", "Slaking", "Oddish", "Gloom", "Vileplume", "Bellossom", "Diglett", "Dugtrio", "Grimer", "Muk", "Zangoose", "Seviper", "Crabrawler", "Crabominable", "Oricorio", "Slowpoke", "Slowbro", "Slowking", "Chinchou", "Lanturn", "Inkay", "Malamar", "Luvdisc", "Finneon", "Lumineon", "Alomomola", "Torkoal", "Fletchling", "Fletchinder", "Talonflame", "Dewpider", "Araquanid", "Tyrogue", "Hitmonlee", "Hitmonchan", "Hitmontop", "Geodude", "Graveler", "Golem", "Drilbur", "Excadrill", "Gothita", "Gothorita", "Gothitelle", "Espurr", "Meowstic", "Minior", "Cranidos", "Rampardos", "Shieldon", "Bastiodon", "Minccino", "Cinccino", "Skarmory", "Swablu", "Altaria", "Magnemite", "Magneton", "Magnezone", "Plusle", "Minun", "Scraggy", "Scrafty", "Golett", "Golurk", "Numel", "Camerupt", "Sinistea", "Polteageist", "Porygon", "Porygon2", "Porygon-Z", "Joltik", "Galvantula", "Tynamo", "Eelektrik", "Eelektross", "Beldum", "Metang", "Metagross", "Axew", "Fraxure", "Haxorus", "Seel", "Dewgong", "Lapras", "Qwilfish", "Overqwil", "Solosis", "Duosion", "Reuniclus", "Snubbull", "Granbull", "Cubchoo", "Beartic", "Sandshrew", "Sandslash", "Vulpix", "Ninetales", "Snover", "Abomasnow", "Duraludon", "Archaludon", "Fuldraken", "Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard", "Squirtle", "Wartortle", "Blastoise", "Chikorita", "Bayleef", "Meganium", "Cyndaquil", "Quilava", "Typhlosion", "Totodile", "Croconaw", "Feraligatr", "Treecko", "Grovyle", "Sceptile", "Torchic", "Combusken", "Blaziken", "Mudkip", "Marshtomp", "Swampert", "Turtwig", "Grotle", "Torterra", "Chimchar", "Monferno", "Infernape", "Piplup", "Prinplup", "Empoleon", "Snivy", "Servine", "Serperior", "Tepig", "Pignite", "Emboar", "Oshawott", "Dewott", "Samurott", "Chespin", "Quilladin", "Chesnaught", "Fennekin", "Braixen", "Delphox", "Froakie", "Frogadier", "Greninja", "Rowlet", "Dartrix", "Decidueye", "Litten", "Torracat", "Incineroar", "Popplio", "Brionne", "Primarina", "Grookey", "Thwackey", "Rillaboom", "Scorbunny", "Raboot", "Cinderace", "Sobble", "Drizzile", "Inteleon", "Gouging Fire", "Raging Bolt", "Iron Crown", "Iron Boulder", "Terapagos", "Walking Wake", "Iron Leaves",
 			];
 			const species = this.dex.species.get(set.species || set.name);
 			if (!blueberryDex.includes(species.baseSpecies) && !blueberryDex.includes(species.name) &&
@@ -595,7 +595,7 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 				if (parts.length !== 4 || !UINT_REGEX.test(low) || hyphen !== '-' || !UINT_REGEX.test(high)) {
 					throw new Error(`EV limits should be in the format "EV Limits = Atk 0-124 / Def 100-252"`);
 				}
-				const statid = this.dex.toID(stat) as StatID;
+				const statid = this.dex.toID(stat) as AttributeID;
 				if (!this.dex.stats.ids().includes(statid)) {
 					throw new Error(`Unrecognized stat name "${stat}" in "${value}"`);
 				}
@@ -607,7 +607,7 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 			const problems = [];
 
 			for (const limit of limits.split(' / ')) {
-				const [statid, range] = limit.split(' ') as [StatID, string];
+				const [statid, range] = limit.split(' ') as [AttributeID, string];
 				const [low, high] = range.split('-').map(num => parseInt(num));
 				const ev = set.evs[statid];
 
@@ -1435,7 +1435,7 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 		onValidateSet(set) {
 			const species = this.dex.species.get(set.species);
 			if (species.num === 493 && set.evs) {
-				let stat: StatID;
+				let stat: AttributeID;
 				for (stat in set.evs) {
 					const ev = set.evs[stat];
 					if (ev > 100) {
@@ -2211,7 +2211,7 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 			const pokemon = this.dex.deepClone(species);
 			pokemon.bst = pokemon.baseStats['hp'];
 			const boost = boosts[tier];
-			let statName: StatID;
+			let statName: AttributeID;
 			for (statName in pokemon.baseStats as StatsTable) {
 				if (statName === 'hp') continue;
 				pokemon.baseStats[statName] = this.clampIntRange(pokemon.baseStats[statName] + boost, 1, 255);
@@ -2267,7 +2267,7 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 			if (!newSpecies.prevo) {
 				if (!baseSpecies.prevo) return;
 				const prevoSpecies = this.dex.species.get(baseSpecies.prevo);
-				let statid: StatID;
+				let statid: AttributeID;
 				newSpecies.bst = 0;
 				for (statid in prevoSpecies.baseStats) {
 					const change = baseSpecies.baseStats[statid] - prevoSpecies.baseStats[statid];
@@ -2279,7 +2279,7 @@ export const Rulesets: import('../sim/dex-formats').FormatDataTable = {
 				return newSpecies;
 			}
 			const prevoSpecies = this.dex.species.get(newSpecies.prevo);
-			let statid: StatID;
+			let statid: AttributeID;
 			newSpecies.bst = 0;
 			for (statid in prevoSpecies.baseStats) {
 				const change = newSpecies.baseStats[statid] - prevoSpecies.baseStats[statid];

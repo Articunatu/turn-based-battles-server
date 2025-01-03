@@ -1289,7 +1289,7 @@ export const commands: Chat.ChatCommands = {
 		let realSet = false;
 
 		let pokemon: StatsTable | undefined;
-		let useStat: StatID | '' = '';
+		let useStat: AttributeID | '' = '';
 
 		let level = 100;
 		let calcHP = false;

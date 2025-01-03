@@ -100,46 +100,46 @@ export interface SecondaryEffect extends HitEffect {
 }
 
 export interface MoveEventMethods {
-	basePowerCallback?: (this: Battle, pokemon: Pokemon, target: Pokemon, move: ActiveMove) => number | false | null;
+	basePowerCallback?: (this: Battle, pokemon: Character, target: Character, move: ActiveMove) => number | false | null;
 	/** Return true to stop the move from being used */
-	beforeMoveCallback?: (this: Battle, pokemon: Pokemon, target: Pokemon | null, move: ActiveMove) => boolean | void;
-	beforeTurnCallback?: (this: Battle, pokemon: Pokemon, target: Pokemon) => void;
-	damageCallback?: (this: Battle, pokemon: Pokemon, target: Pokemon) => number | false;
-	priorityChargeCallback?: (this: Battle, pokemon: Pokemon) => void;
+	beforeMoveCallback?: (this: Battle, pokemon: Character, target: Character | null, move: ActiveMove) => boolean | void;
+	beforeTurnCallback?: (this: Battle, pokemon: Character, target: Character) => void;
+	damageCallback?: (this: Battle, pokemon: Character, target: Character) => number | false;
+	priorityChargeCallback?: (this: Battle, pokemon: Character) => void;
 
-	onDisableMove?: (this: Battle, pokemon: Pokemon) => void;
+	onDisableMove?: (this: Battle, pokemon: Character) => void;
 
 	onAfterHit?: CommonHandlers['VoidSourceMove'];
-	onAfterSubDamage?: (this: Battle, damage: number, target: Pokemon, source: Pokemon, move: ActiveMove) => void;
+	onAfterSubDamage?: (this: Battle, damage: number, target: Character, source: Character, move: ActiveMove) => void;
 	onAfterMoveSecondarySelf?: CommonHandlers['VoidSourceMove'];
 	onAfterMoveSecondary?: CommonHandlers['VoidMove'];
 	onAfterMove?: CommonHandlers['VoidSourceMove'];
 	onDamagePriority?: number;
 	onDamage?: (
-		this: Battle, damage: number, target: Pokemon, source: Pokemon, effect: Effect
+		this: Battle, damage: number, target: Character, source: Character, effect: Effect
 	) => number | boolean | null | void;
 
 	/* Invoked by the global BasePower event (onEffect = true) */
 	onBasePower?: CommonHandlers['ModifierSourceMove'];
 
 	onEffectiveness?: (
-		this: Battle, typeMod: number, target: Pokemon | null, type: string, move: ActiveMove
+		this: Battle, typeMod: number, target: Character | null, type: string, move: ActiveMove
 	) => number | void;
 	onHit?: CommonHandlers['ResultMove'];
 	onHitField?: CommonHandlers['ResultMove'];
-	onHitSide?: (this: Battle, side: Side, source: Pokemon, move: ActiveMove) => boolean | null | "" | void;
-	onModifyMove?: (this: Battle, move: ActiveMove, pokemon: Pokemon, target: Pokemon | null) => void;
+	onHitSide?: (this: Battle, side: Side, source: Character, move: ActiveMove) => boolean | null | "" | void;
+	onModifyMove?: (this: Battle, move: ActiveMove, pokemon: Character, target: Character | null) => void;
 	onModifyPriority?: CommonHandlers['ModifierSourceMove'];
 	onMoveFail?: CommonHandlers['VoidMove'];
-	onModifyType?: (this: Battle, move: ActiveMove, pokemon: Pokemon, target: Pokemon) => void;
+	onModifyType?: (this: Battle, move: ActiveMove, pokemon: Character, target: Character) => void;
 	onModifyTarget?: (
-		this: Battle, relayVar: {target: Pokemon}, pokemon: Pokemon, target: Pokemon, move: ActiveMove
+		this: Battle, relayVar: {target: Character}, pokemon: Character, target: Character, move: ActiveMove
 	) => void;
 	onPrepareHit?: CommonHandlers['ResultMove'];
 	onTry?: CommonHandlers['ResultSourceMove'];
 	onTryHit?: CommonHandlers['ExtResultSourceMove'];
 	onTryHitField?: CommonHandlers['ResultMove'];
-	onTryHitSide?: (this: Battle, side: Side, source: Pokemon, move: ActiveMove) => boolean |
+	onTryHitSide?: (this: Battle, side: Side, source: Character, move: ActiveMove) => boolean |
 	 null | "" | void;
 	onTryImmunity?: CommonHandlers['ResultMove'];
 	onTryMove?: CommonHandlers['ResultSourceMove'];
@@ -230,7 +230,7 @@ export interface MoveData extends EffectData, MoveEventMethods, HitEffect {
 	/**
 	 * Physical moves use attack stat modifiers, special moves use special attack stat modifiers.
 	 */
-	overrideOffensiveStat?: StatIDExceptHP;
+	overrideOffensiveStat?: AttributeIdExceptHealth;
 	/**
 	 * Pokemon for the defense stat. Ability and Item damage modifiers still come from the real defender.
 	 */
@@ -238,7 +238,7 @@ export interface MoveData extends EffectData, MoveEventMethods, HitEffect {
 	/**
 	 * uses modifiers that match the new stat
 	 */
-	overrideDefensiveStat?: StatIDExceptHP;
+	overrideDefensiveStat?: AttributeIdExceptHealth;
 	forceSTAB?: boolean;
 	ignoreAbility?: boolean;
 	ignoreAccuracy?: boolean;
@@ -319,8 +319,8 @@ export interface ActiveMove extends MutableMove {
 	hit: number;
 	moveHitData?: MoveHitData;
 	ability?: Ability;
-	allies?: Pokemon[];
-	auraBooster?: Pokemon;
+	allies?: Character[];
+	auraBooster?: Character;
 	causedCrashDamage?: boolean;
 	forceStatus?: ID;
 	hasAuraBreak?: boolean;
@@ -342,10 +342,10 @@ export interface ActiveMove extends MutableMove {
 	typeChangerBoosted?: Effect;
 	willChangeForme?: boolean;
 	infiltrates?: boolean;
-	ruinedAtk?: Pokemon;
-	ruinedDef?: Pokemon;
-	ruinedSpA?: Pokemon;
-	ruinedSpD?: Pokemon;
+	ruinedAtk?: Character;
+	ruinedDef?: Character;
+	ruinedSpA?: Character;
+	ruinedSpD?: Character;
 
 	/**
 	 * Has this move been boosted by a Z-crystal or used by a Dynamax Pokemon? Usually the same as
@@ -407,7 +407,7 @@ export class DataMove extends BasicEffect implements Readonly<BasicEffect & Move
 	/**
 	 * Physical moves use attack stat modifiers, special moves use special attack stat modifiers.
 	 */
-	 readonly overrideOffensiveStat?: StatIDExceptHP;
+	 readonly overrideOffensiveStat?: AttributeIdExceptHealth;
 	/**
 	 * Pokemon for the defense stat. Ability and Item damage modifiers still come from the real defender.
 	 */
@@ -415,7 +415,7 @@ export class DataMove extends BasicEffect implements Readonly<BasicEffect & Move
 	/**
 	 * uses modifiers that match the new stat
 	 */
-	 readonly overrideDefensiveStat?: StatIDExceptHP;
+	 readonly overrideDefensiveStat?: AttributeIdExceptHealth;
 	/** Whether or not this move ignores negative attack boosts. */
 	readonly ignoreNegativeOffensive: boolean;
 	/** Whether or not this move ignores positive defense boosts. */
@@ -618,11 +618,11 @@ export class DataMove extends BasicEffect implements Readonly<BasicEffect & Move
 }
 
 export class DexMoves {
-	readonly dex: ModdedDex;
+	readonly dex: ModdedDb;
 	readonly moveCache = new Map<ID, Move>();
 	allCache: readonly Move[] | null = null;
 
-	constructor(dex: ModdedDex) {
+	constructor(dex: ModdedDb) {
 		this.dex = dex;
 	}
 

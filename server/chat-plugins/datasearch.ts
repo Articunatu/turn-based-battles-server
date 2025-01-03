@@ -1247,7 +1247,7 @@ function runDexsearch(target: string, cmd: string, canAll: boolean, message: str
 				} else if (stat === 'gen') {
 					monStat = dex[mon].gen;
 				} else {
-					monStat = dex[mon].baseStats[stat as StatID];
+					monStat = dex[mon].baseStats[stat as AttributeID];
 				}
 				if (typeof alts.stats[stat].less === 'number') {
 					if (monStat < alts.stats[stat].less) {
@@ -1305,7 +1305,7 @@ function runDexsearch(target: string, cmd: string, canAll: boolean, message: str
 		} else if (stat === 'gen') {
 			return mon.gen;
 		} else {
-			return mon.baseStats[stat as StatID];
+			return mon.baseStats[stat as AttributeID];
 		}
 	}
 

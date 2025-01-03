@@ -27,11 +27,11 @@ export interface MoveAction {
 	/** speed of pokemon using move (higher first if priority tie) */
 	speed: number;
 	/** the pokemon doing the move */
-	pokemon: Pokemon;
+	pokemon: Character;
 	/** location of the target, relative to pokemon's side */
 	targetLoc: number;
 	/** original target pokemon, for target-tracking moves */
-	originalTarget: Pokemon;
+	originalTarget: Character;
 	/** a move to use (move action only) */
 	moveid: ID;
 	/** a move to use (move action only) */
@@ -56,9 +56,9 @@ export interface SwitchAction {
 	/** speed of pokemon switching (higher first if priority tie) */
 	speed: number;
 	/** the pokemon doing the switch */
-	pokemon: Pokemon;
+	pokemon: Character;
 	/** pokemon to switch to */
-	target: Pokemon;
+	target: Character;
 	/** effect that called the switch (eg U */
 	sourceEffect: Effect | null;
 }
@@ -72,7 +72,7 @@ export interface TeamAction {
 	/** unused for this action type */
 	speed: 1;
 	/** the pokemon switching */
-	pokemon: Pokemon;
+	pokemon: Character;
 	/** new index */
 	index: number;
 }
@@ -98,9 +98,9 @@ export interface PokemonAction {
 	/** speed of pokemon doing action (higher first if priority tie) */
 	speed: number;
 	/** the pokemon doing action */
-	pokemon: Pokemon;
+	pokemon: Character;
 	/** `runSwitch` only: the pokemon forcing this pokemon to switch in */
-	dragger?: Pokemon;
+	dragger?: Character;
 	/** `event` only: the event to run */
 	event?: string;
 }
@@ -130,7 +130,7 @@ export class BattleQueue {
 	constructor(battle: Battle) {
 		this.battle = battle;
 		this.list = [];
-		const queueScripts = battle.format.queue || battle.dex.data.Scripts.queue;
+		const queueScripts = battle.format.queue || battle.db.data.Scripts.queue;
 		if (queueScripts) Object.assign(this, queueScripts);
 	}
 
@@ -164,7 +164,7 @@ export class BattleQueue {
 		const actions = [action];
 
 		if (!action.side && action.pokemon) action.side = action.pokemon.side;
-		if (!action.move && action.moveid) action.move = this.battle.dex.getActiveMove(action.moveid);
+		if (!action.move && action.moveid) action.move = this.battle.db.getActiveMove(action.moveid);
 		if (!action.order) {
 			const orders: {[choice: string]: number} = {
 				team: 1,
@@ -246,7 +246,7 @@ export class BattleQueue {
 				action.fractionalPriority = this.battle.runEvent('FractionalPriority', action.pokemon, null, action.move, 0);
 			} else if (['switch', 'instaswitch'].includes(action.choice)) {
 				if (typeof action.pokemon.switchFlag === 'string') {
-					action.sourceEffect = this.battle.dex.moves.get(action.pokemon.switchFlag as ID) as any;
+					action.sourceEffect = this.battle.db.moves.get(action.pokemon.switchFlag as ID) as any;
 				}
 				action.pokemon.switchFlag = false;
 			}
@@ -255,7 +255,7 @@ export class BattleQueue {
 		const deferPriority = this.battle.gen === 7 && action.mega && action.mega !== 'done';
 		if (action.move) {
 			let target = null;
-			action.move = this.battle.dex.getActiveMove(action.move);
+			action.move = this.battle.db.getActiveMove(action.move);
 
 			if (!action.targetLoc) {
 				target = this.battle.getRandomTarget(action.pokemon, action.move);
@@ -290,7 +290,7 @@ export class BattleQueue {
 	 * You'd normally want the OverrideAction event (which doesn't
 	 * change priority order).
 	 */
-	changeAction(pokemon: Pokemon, action: ActionChoice) {
+	changeAction(pokemon: Character, action: ActionChoice) {
 		this.cancelAction(pokemon);
 		if (!action.pokemon) action.pokemon = pokemon;
 		this.insertChoice(action);
@@ -318,7 +318,7 @@ export class BattleQueue {
 		return null;
 	}
 
-	willMove(pokemon: Pokemon) {
+	willMove(pokemon: Character) {
 		if (pokemon.fainted) return null;
 		for (const action of this.list) {
 			if (action.choice === 'move' && action.pokemon === pokemon) {
@@ -328,7 +328,7 @@ export class BattleQueue {
 		return null;
 	}
 
-	cancelAction(pokemon: Pokemon) {
+	cancelAction(pokemon: Character) {
 		const oldLength = this.list.length;
 		for (let i = 0; i < this.list.length; i++) {
 			if (this.list[i].pokemon === pokemon) {
@@ -339,7 +339,7 @@ export class BattleQueue {
 		return this.list.length !== oldLength;
 	}
 
-	cancelMove(pokemon: Pokemon) {
+	cancelMove(pokemon: Character) {
 		for (const [i, action] of this.list.entries()) {
 			if (action.choice === 'move' && action.pokemon === pokemon) {
 				this.list.splice(i, 1);
@@ -349,7 +349,7 @@ export class BattleQueue {
 		return false;
 	}
 
-	willSwitch(pokemon: Pokemon) {
+	willSwitch(pokemon: Character) {
 		for (const action of this.list) {
 			if (['switch', 'instaswitch'].includes(action.choice) && action.pokemon === pokemon) {
 				return action;

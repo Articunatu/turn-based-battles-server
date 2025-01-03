@@ -3689,7 +3689,7 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	terapagos: {
 		tier: "OU",
 	},
-	hydrapple: {
+	fuldraken: {
 		tier: "OU",
 	},
 	ragingbolt: {
@@ -3697,7 +3697,10 @@ export const FormatsData: import('../../../sim/dex-species').ModdedSpeciesFormat
 	},
 	gougingfire: {
 		tier: "OU",
+	},grodan: {
+		tier: "OU",
 	},
+
 	archaludon: {
 		tier: "OU",
 	},

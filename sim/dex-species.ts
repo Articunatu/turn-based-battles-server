@@ -382,12 +382,12 @@ export class Learnset {
 }
 
 export class DexSpecies {
-	readonly dex: ModdedDex;
+	readonly dex: ModdedDb;
 	readonly speciesCache = new Map<ID, Species>();
 	readonly learnsetCache = new Map<ID, Learnset>();
 	allCache: readonly Species[] | null = null;
 
-	constructor(dex: ModdedDex) {
+	constructor(dex: ModdedDb) {
 		this.dex = dex;
 	}
 

@@ -33,7 +33,7 @@ export const Rulesets: import('../../../sim/dex-formats').ModdedFormatDataTable 
 				const isEventArceus = set.moves.includes('roaroftime') || set.moves.includes('shadowforce') ||
 					set.moves.includes('spacialrend');
 				if (isEventArceus) {
-					let stat: StatID;
+					let stat: AttributeID;
 					for (stat in set.evs) {
 						if (set.evs[stat] > 100) {
 							return ["Event Arceus may not have more than 100 of any EVs in Generation 4."];

@@ -272,7 +272,7 @@ export const State = new class {
 	// a bug in the simulator if it ever happened, but if not, the isActiveMove check can
 	// be extended.
 	serializeActiveMove(move: ActiveMove, battle: Battle): /* ActiveMove */ AnyObject {
-		const base = battle.dex.moves.get(move.id);
+		const base = battle.db.moves.get(move.id);
 		const skip = new Set([...ACTIVE_MOVE]);
 		for (const [key, value] of Object.entries(base)) {
 			// This should really be a deepEquals check to see if anything on ActiveMove was
@@ -287,7 +287,7 @@ export const State = new class {
 	}
 
 	deserializeActiveMove(state: /* ActiveMove */ AnyObject, battle: Battle): ActiveMove {
-		const move = battle.dex.getActiveMove(this.fromRef(state.move, battle)! as Move);
+		const move = battle.db.getActiveMove(this.fromRef(state.move, battle)! as Move);
 		this.deserialize(state, move, ACTIVE_MOVE, battle);
 		return move;
 	}
@@ -400,11 +400,11 @@ export const State = new class {
 		switch (type) {
 		case 'Side': return battle.sides[Number(id[1]) - 1];
 		case 'Pokemon': return battle.sides[Number(id[1]) - 1].pokemon[POSITIONS.indexOf(id[2])];
-		case 'Ability': return battle.dex.abilities.get(id);
-		case 'Item': return battle.dex.items.get(id);
-		case 'Move': return battle.dex.moves.get(id);
-		case 'Condition': return battle.dex.conditions.get(id);
-		case 'Species': return battle.dex.species.get(id);
+		case 'Ability': return battle.db.abilities.get(id);
+		case 'Item': return battle.db.items.get(id);
+		case 'Move': return battle.db.moves.get(id);
+		case 'Condition': return battle.db.conditions.get(id);
+		case 'Species': return battle.db.species.get(id);
 		default: return undefined; // maybe we actually got unlucky and its a string
 		}
 	}

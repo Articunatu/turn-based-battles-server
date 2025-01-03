@@ -70,7 +70,7 @@ export const Scripts: ModdedBattleScriptsData = {
 			let i: BoostID;
 			for (i in boost) {
 				delta = boost[i]!;
-				if (delta > 0 && this.getStat(i as StatIDExceptHP, false, true) === 999) {
+				if (delta > 0 && this.getStat(i as AttributeIdExceptHealth, false, true) === 999) {
 					delta = 0;
 					continue;
 				}
@@ -587,8 +587,8 @@ export const Scripts: ModdedBattleScriptsData = {
 			const defender = move.overrideDefensivePokemon === 'source' ? source : target;
 
 			const isPhysical = move.category === 'Physical';
-			const atkType: StatIDExceptHP = move.overrideOffensiveStat || (isPhysical ? 'atk' : 'spa');
-			const defType: StatIDExceptHP = move.overrideDefensiveStat || (isPhysical ? 'def' : 'spd');
+			const atkType: AttributeIdExceptHealth = move.overrideOffensiveStat || (isPhysical ? 'atk' : 'spa');
+			const defType: AttributeIdExceptHealth = move.overrideDefensiveStat || (isPhysical ? 'def' : 'spd');
 
 			let unboosted = false;
 			let noburndrop = false;

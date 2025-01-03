@@ -499,7 +499,7 @@ export const Scripts: ModdedBattleScriptsData = {
 				originalSpecies: formeChangeSpecies.name,
 				requiredItem: formeChangeSpecies.requiredItem,
 			};
-			let statId: StatID;
+			let statId: AttributeID;
 			for (statId in formeChangeSpecies.baseStats) {
 				deltas.baseStats[statId] = formeChangeSpecies.baseStats[statId] - baseSpecies.baseStats[statId];
 			}

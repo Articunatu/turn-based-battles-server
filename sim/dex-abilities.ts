@@ -2,10 +2,10 @@ import type {PokemonEventMethods, ConditionData} from './dex-conditions';
 import {BasicEffect, toID} from './dex-data';
 
 interface AbilityEventMethods {
-	onCheckShow?: (this: Battle, pokemon: Pokemon) => void;
-	onEnd?: (this: Battle, target: Pokemon & Side & Field) => void;
-	onPreStart?: (this: Battle, pokemon: Pokemon) => void;
-	onStart?: (this: Battle, target: Pokemon) => void;
+	onCheckShow?: (this: Battle, pokemon: Character) => void;
+	onEnd?: (this: Battle, target: Character & Side & Field) => void;
+	onPreStart?: (this: Battle, pokemon: Character) => void;
+	onStart?: (this: Battle, target: Character) => void;
 }
 
 /* Possible Ability flags */
@@ -67,11 +67,11 @@ export class Ability extends BasicEffect implements Readonly<BasicEffect> {
 }
 
 export class DexAbilities {
-	readonly dex: ModdedDex;
+	readonly dex: ModdedDb;
 	readonly abilityCache = new Map<ID, Ability>();
 	allCache: readonly Ability[] | null = null;
 
-	constructor(dex: ModdedDex) {
+	constructor(dex: ModdedDb) {
 		this.dex = dex;
 	}
 

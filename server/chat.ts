@@ -314,7 +314,7 @@ export abstract class MessageContext {
 		const {dex, format} = this.extractFormat(room?.settings.defaultFormat || room?.battle?.format);
 		return {dex, format, targets};
 	}
-	extractFormat(formatOrMod?: string): {dex: ModdedDex, format: Format | null, isMatch: boolean} {
+	extractFormat(formatOrMod?: string): {dex: ModdedDb, format: Format | null, isMatch: boolean} {
 		if (!formatOrMod) {
 			return {dex: Dex.includeData(), format: null, isMatch: false};
 		}

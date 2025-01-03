@@ -1,11 +1,8 @@
-export const Natures: import('../sim/dex-data').NatureDataTable = {
+export const Roles: import('../sim/db-data').RoleDataTable = {
 	adamant: {
 		name: "Adamant",
 		plus: 'atk',
 		minus: 'spa',
-	},
-	bashful: {
-		name: "Bashful",
 	},
 	bold: {
 		name: "Bold",
@@ -27,16 +24,10 @@ export const Natures: import('../sim/dex-data').NatureDataTable = {
 		plus: 'spd',
 		minus: 'spa',
 	},
-	docile: {
-		name: "Docile",
-	},
 	gentle: {
 		name: "Gentle",
 		plus: 'spd',
 		minus: 'def',
-	},
-	hardy: {
-		name: "Hardy",
 	},
 	hasty: {
 		name: "Hasty",
@@ -88,9 +79,6 @@ export const Natures: import('../sim/dex-data').NatureDataTable = {
 		plus: 'spa',
 		minus: 'spe',
 	},
-	quirky: {
-		name: "Quirky",
-	},
 	rash: {
 		name: "Rash",
 		plus: 'spa',
@@ -106,8 +94,8 @@ export const Natures: import('../sim/dex-data').NatureDataTable = {
 		plus: 'spd',
 		minus: 'spe',
 	},
-	serious: {
-		name: "Serious",
+	roleless: {
+		name: "Roleless",
 	},
 	timid: {
 		name: "Timid",

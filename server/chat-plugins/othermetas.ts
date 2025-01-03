@@ -8,7 +8,7 @@
 import {Utils} from '../../lib';
 
 interface StoneDeltas {
-	baseStats: {[stat in StatID]: number};
+	baseStats: {[stat in AttributeID]: number};
 	bst: number;
 	weighthg: number;
 	type?: string;
@@ -137,7 +137,7 @@ export const commands: Chat.ChatCommands = {
 			weighthg: megaSpecies.weighthg - baseSpecies.weighthg,
 			bst: megaSpecies.bst - baseSpecies.bst,
 		};
-		let statId: StatID;
+		let statId: AttributeID;
 		for (statId in megaSpecies.baseStats) {
 			deltas.baseStats[statId] = megaSpecies.baseStats[statId] - baseSpecies.baseStats[statId];
 		}
@@ -157,7 +157,7 @@ export const commands: Chat.ChatCommands = {
 		} else if (deltas.type) {
 			mixedSpecies.types = [mixedSpecies.types[0], deltas.type];
 		}
-		let statName: StatID;
+		let statName: AttributeID;
 		mixedSpecies.bst = 0;
 		for (statName in species.baseStats) { // Add the changed stats and weight
 			mixedSpecies.baseStats[statName] = Utils.clampIntRange(
@@ -274,7 +274,7 @@ export const commands: Chat.ChatCommands = {
 				weighthg: megaSpecies.weighthg - baseSpecies.weighthg,
 				bst: megaSpecies.bst - baseSpecies.bst,
 			};
-			let statId: StatID;
+			let statId: AttributeID;
 			for (statId in megaSpecies.baseStats) {
 				deltas.baseStats[statId] = megaSpecies.baseStats[statId] - baseSpecies.baseStats[statId];
 			}
@@ -478,10 +478,10 @@ export const commands: Chat.ChatCommands = {
 		for (const statName in species.baseStats) {
 			if (statName === 'hp') continue;
 			if (!fusion.name.length) {
-				species.baseStats[statName] = Math.floor(species.baseStats[statName as StatID] / 4);
+				species.baseStats[statName] = Math.floor(species.baseStats[statName as AttributeID] / 4);
 				species.bst += species.baseStats[statName];
 			} else {
-				const addition = Math.floor(fusion.baseStats[statName as StatID] / 4);
+				const addition = Math.floor(fusion.baseStats[statName as AttributeID] / 4);
 				species.baseStats[statName] = Utils.clampIntRange(species.baseStats[statName] + addition, 1, 255);
 				species.bst += species.baseStats[statName];
 			}
@@ -766,7 +766,7 @@ export const commands: Chat.ChatCommands = {
 		mixedSpecies.abilities = Utils.deepClone(crossSpecies.abilities);
 		mixedSpecies.baseStats = Utils.deepClone(mixedSpecies.baseStats);
 		mixedSpecies.bst = 0;
-		let statName: StatID;
+		let statName: AttributeID;
 		for (statName in species.baseStats) {
 			const statChange = crossSpecies.baseStats[statName] - prevo.baseStats[statName];
 			mixedSpecies.baseStats[statName] = Utils.clampIntRange(mixedSpecies.baseStats[statName] + statChange, 1, 255);
@@ -849,7 +849,7 @@ export const commands: Chat.ChatCommands = {
 				}
 			}
 			deltas.bst = 0;
-			let i: StatID;
+			let i: AttributeID;
 			for (i in evo.baseStats) {
 				const statChange = evoBaseSpecies.baseStats[i] - prevoSpecies.baseStats[i];
 				const formeChange = evo.baseStats[i] - evoBaseSpecies.baseStats[i];
@@ -895,7 +895,7 @@ export const commands: Chat.ChatCommands = {
 				}
 			}
 			deltas.bst = 0;
-			let i: StatID;
+			let i: AttributeID;
 			for (i in evo.baseStats) {
 				const statChange = evo.baseStats[i] - prevoSpecies.baseStats[i];
 				if (!isReEvo) {

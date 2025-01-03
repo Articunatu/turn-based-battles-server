@@ -61,7 +61,7 @@ export const Scripts: ModdedBattleScriptsData = {
 			this.knownType = this.isAlly(pokemon) && pokemon.knownType;
 			this.apparentType = pokemon.apparentType;
 
-			let statName: StatIDExceptHP;
+			let statName: AttributeIdExceptHealth;
 			for (statName in this.storedStats) {
 				this.storedStats[statName] = pokemon.storedStats[statName];
 				if (this.modifiedStats) this.modifiedStats[statName] = pokemon.modifiedStats![statName]; // Gen 1: Copy modified stats.

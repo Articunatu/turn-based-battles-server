@@ -21,7 +21,7 @@ export class Field {
 
 	constructor(battle: Battle) {
 		this.battle = battle;
-		const fieldScripts = this.battle.format.field || this.battle.dex.data.Scripts.field;
+		const fieldScripts = this.battle.format.field || this.battle.db.data.Scripts.field;
 		if (fieldScripts) Object.assign(this, fieldScripts);
 		this.id = '';
 
@@ -36,8 +36,8 @@ export class Field {
 		return State.serializeField(this);
 	}
 
-	setWeather(status: string | Condition, source: Pokemon | 'debug' | null = null, sourceEffect: Effect | null = null) {
-		status = this.battle.dex.conditions.get(status);
+	setWeather(status: string | Condition, source: Character | 'debug' | null = null, sourceEffect: Effect | null = null) {
+		status = this.battle.db.conditions.get(status);
 		if (!sourceEffect && this.battle.effect) sourceEffect = this.battle.effect;
 		if (!source && this.battle.event && this.battle.event.target) source = this.battle.event.target;
 		if (source === 'debug') source = this.battle.sides[0].active[0];
@@ -55,7 +55,7 @@ export class Field {
 			const result = this.battle.runEvent('SetWeather', source, source, status);
 			if (!result) {
 				if (result === false) {
-					if ((sourceEffect as Move)?.weather) {
+					if ((sourceEffect as Move)?.area) {
 						this.battle.add('-fail', source, sourceEffect, '[from] ' + this.weather);
 					} else if (sourceEffect && sourceEffect.effectType === 'Ability') {
 						this.battle.add('-ability', source, sourceEffect, '[from] ' + this.weather, '[fail]');
@@ -124,11 +124,11 @@ export class Field {
 	}
 
 	getWeather() {
-		return this.battle.dex.conditions.getByID(this.weather);
+		return this.battle.db.conditions.getByID(this.weather);
 	}
 
-	setTerrain(status: string | Effect, source: Pokemon | 'debug' | null = null, sourceEffect: Effect | null = null) {
-		status = this.battle.dex.conditions.get(status);
+	setTerrain(status: string | Effect, source: Character | 'debug' | null = null, sourceEffect: Effect | null = null) {
+		status = this.battle.db.conditions.get(status);
 		if (!sourceEffect && this.battle.effect) sourceEffect = this.battle.effect;
 		if (!source && this.battle.event && this.battle.event.target) source = this.battle.event.target;
 		if (source === 'debug') source = this.battle.sides[0].active[0];
@@ -166,12 +166,12 @@ export class Field {
 		return true;
 	}
 
-	effectiveTerrain(target?: Pokemon | Side | Battle) {
+	effectiveTerrain(target?: Character | Side | Battle) {
 		if (this.battle.event && !target) target = this.battle.event.target;
 		return this.battle.runEvent('TryTerrain', target) ? this.terrain : '';
 	}
 
-	isTerrain(terrain: string | string[], target?: Pokemon | Side | Battle) {
+	isTerrain(terrain: string | string[], target?: Character | Side | Battle) {
 		const ourTerrain = this.effectiveTerrain(target);
 		if (!Array.isArray(terrain)) {
 			return ourTerrain === toID(terrain);
@@ -180,17 +180,17 @@ export class Field {
 	}
 
 	getTerrain() {
-		return this.battle.dex.conditions.getByID(this.terrain);
+		return this.battle.db.conditions.getByID(this.terrain);
 	}
 
 	addPseudoWeather(
 		status: string | Condition,
-		source: Pokemon | 'debug' | null = null,
+		source: Character | 'debug' | null = null,
 		sourceEffect: Effect | null = null
 	): boolean {
 		if (!source && this.battle.event && this.battle.event.target) source = this.battle.event.target;
 		if (source === 'debug') source = this.battle.sides[0].active[0];
-		status = this.battle.dex.conditions.get(status);
+		status = this.battle.db.conditions.get(status);
 
 		let state = this.pseudoWeather[status.id];
 		if (state) {
@@ -216,12 +216,12 @@ export class Field {
 	}
 
 	getPseudoWeather(status: string | Effect) {
-		status = this.battle.dex.conditions.get(status);
+		status = this.battle.db.conditions.get(status);
 		return this.pseudoWeather[status.id] ? status : null;
 	}
 
 	removePseudoWeather(status: string | Effect) {
-		status = this.battle.dex.conditions.get(status);
+		status = this.battle.db.conditions.get(status);
 		const state = this.pseudoWeather[status.id];
 		if (!state) return false;
 		this.battle.singleEvent('FieldEnd', status, state, this);

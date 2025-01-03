@@ -93158,7 +93158,7 @@ export const Learnsets: import('../sim/dex-species').LearnsetDataTable = {
 			thunderwave: ["9M"],
 		},
 	},
-	hydrapple: {
+	fuldraken: {
 		learnset: {
 			astonish: ["9L1"],
 			bodypress: ["9M"],

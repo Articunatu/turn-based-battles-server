@@ -95,7 +95,7 @@ function sereneGraceBenefits(move: Move) {
 }
 
 export class RandomGen8Teams {
-	dex: ModdedDex;
+	dex: ModdedDb;
 	gen: number;
 	factoryTier: string;
 	format: Format;
@@ -438,7 +438,7 @@ export class RandomGen8Teams {
 
 			// Random EVs
 			const evs: StatsTable = {hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0};
-			const s: StatID[] = ["hp", "atk", "def", "spa", "spd", "spe"];
+			const s: AttributeID[] = ["hp", "atk", "def", "spa", "spd", "spe"];
 			let evpool = 510;
 			do {
 				const x = this.sample(s);
@@ -2311,8 +2311,8 @@ export class RandomGen8Teams {
 				if (move.startsWith('hiddenpower')) hpType = move.substr(11);
 			}
 			if (!hpType) throw new Error(`hasHiddenPower is true, but no Hidden Power move was found.`);
-			const HPivs = this.dex.types.get(hpType).HPivs;
-			let iv: StatID;
+			const HPivs = this.dex.types.get(hpType).Healthivs;
+			let iv: AttributeID;
 			for (iv in HPivs) {
 				ivs[iv] = HPivs[iv]!;
 			}

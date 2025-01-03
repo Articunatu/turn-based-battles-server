@@ -125,7 +125,7 @@ export class Battle {
 	readonly field: Field;
 	readonly sides: [Side, Side] | [Side, Side, Side, Side];
 	readonly prngSeed: PRNGSeed;
-	dex: ModdedDex;
+	db: ModdedDb;
 	gen: number;
 	ruleTable: Dex.RuleTable;
 	prng: PRNG;
@@ -194,15 +194,15 @@ export class Battle {
 
 		const format = options.format || Dex.formats.get(options.formatid, true);
 		this.format = format;
-		this.dex = Dex.forFormat(format);
-		this.gen = this.dex.gen;
-		this.ruleTable = this.dex.formats.getRuleTable(format);
+		this.db = Dex.forFormat(format);
+		this.gen = this.db.gen;
+		this.ruleTable = this.db.formats.getRuleTable(format);
 
-		this.trunc = this.dex.trunc;
+		this.trunc = this.db.trunc;
 		this.clampIntRange = Utils.clampIntRange;
 		// Object.assign(this, this.dex.data.Scripts);
-		for (const i in this.dex.data.Scripts) {
-			const entry = this.dex.data.Scripts[i];
+		for (const i in this.db.data.Scripts) {
+			const entry = this.db.data.Scripts[i];
 			if (typeof entry === 'function') (this as any)[i] = entry;
 		}
 		if (format.battle) Object.assign(this, format.battle);
@@ -291,7 +291,7 @@ export class Battle {
 		// timing is early enough to hook into ModifySpecies event
 		for (const rule of this.ruleTable.keys()) {
 			if ('+*-!'.includes(rule.charAt(0))) continue;
-			const subFormat = this.dex.formats.get(rule);
+			const subFormat = this.db.formats.get(rule);
 			if (subFormat.exists) {
 				const hasEventHandler = Object.keys(subFormat).some(
 					// skip event handlers that are handled elsewhere
@@ -963,7 +963,7 @@ export class Battle {
 		}
 		for (const id in pokemon.volatiles) {
 			const volatileState = pokemon.volatiles[id];
-			const volatile = this.dex.conditions.getByID(id as ID);
+			const volatile = this.db.conditions.getByID(id as ID);
 			// @ts-ignore - dynamic lookup
 			callback = volatile[callbackName];
 			if (callback !== undefined || (getKey && volatileState[getKey])) {
@@ -999,7 +999,7 @@ export class Battle {
 		const side = pokemon.side;
 		for (const conditionid in side.slotConditions[pokemon.position]) {
 			const slotConditionState = side.slotConditions[pokemon.position][conditionid];
-			const slotCondition = this.dex.conditions.getByID(conditionid as ID);
+			const slotCondition = this.db.conditions.getByID(conditionid as ID);
 			// @ts-ignore - dynamic lookup
 			callback = slotCondition[callbackName];
 			if (callback !== undefined || (getKey && slotConditionState[getKey])) {
@@ -1047,7 +1047,7 @@ export class Battle {
 		let callback;
 		for (const id in field.pseudoWeather) {
 			const pseudoWeatherState = field.pseudoWeather[id];
-			const pseudoWeather = this.dex.conditions.getByID(id as ID);
+			const pseudoWeather = this.db.conditions.getByID(id as ID);
 			// @ts-ignore - dynamic lookup
 			callback = pseudoWeather[callbackName];
 			if (callback !== undefined || (getKey && pseudoWeatherState[getKey])) {
@@ -1084,7 +1084,7 @@ export class Battle {
 
 		for (const id in side.sideConditions) {
 			const sideConditionData = side.sideConditions[id];
-			const sideCondition = this.dex.conditions.getByID(id as ID);
+			const sideCondition = this.db.conditions.getByID(id as ID);
 			// @ts-ignore - dynamic lookup
 			const callback = sideCondition[callbackName];
 			if (callback !== undefined || (getKey && sideConditionData[getKey])) {
@@ -1502,7 +1502,7 @@ export class Battle {
 				}
 				this.runEvent('DisableMove', pokemon);
 				for (const moveSlot of pokemon.moveSlots) {
-					const activeMove = this.dex.getActiveMove(moveSlot.id);
+					const activeMove = this.db.getActiveMove(moveSlot.id);
 					this.singleEvent('DisableMove', activeMove, null, pokemon);
 					if (activeMove.flags['cantusetwice'] && pokemon.lastMove?.id === moveSlot.id) {
 						pokemon.disableMove(pokemon.lastMove.id);
@@ -1537,7 +1537,7 @@ export class Battle {
 
 				pokemon.trapped = pokemon.maybeTrapped = false;
 				this.runEvent('TrapPokemon', pokemon);
-				if (!pokemon.knownType || this.dex.getImmunity('trapped', pokemon)) {
+				if (!pokemon.knownType || this.db.getImmunity('trapped', pokemon)) {
 					this.runEvent('MaybeTrapPokemon', pokemon);
 				}
 				// canceling switches would leak information
@@ -1561,9 +1561,9 @@ export class Battle {
 								// unreleased hidden ability
 								continue;
 							}
-							const ability = this.dex.abilities.get(abilityName);
+							const ability = this.db.abilities.get(abilityName);
 							if (ruleTable.has('-ability:' + ability.id)) continue;
-							if (pokemon.knownType && !this.dex.getImmunity('trapped', pokemon)) continue;
+							if (pokemon.knownType && !this.db.getImmunity('trapped', pokemon)) continue;
 							this.singleEvent('FoeMaybeTrapPokemon', ability, {}, pokemon, source);
 						}
 					}
@@ -1641,7 +1641,7 @@ export class Battle {
 					pokemon.fainted ||
 					// true if transforming into this pokemon would lead to an endless battle
 					// Transform will fail (depleting PP) if used against Ditto in Stadium 1
-					(this.dex.currentMod !== 'gen1stadium' || pokemon.species.id !== 'ditto') &&
+					(this.db.currentMod !== 'gen1stadium' || pokemon.species.id !== 'ditto') &&
 					// there are some subtleties such as a Mew with only Transform and auto-fail moves,
 					// but it's unlikely to come up in a real game so there's no need to handle it
 					pokemon.moves.every(moveid => moveid === 'transform')
@@ -1777,7 +1777,7 @@ export class Battle {
 		format.onBegin?.call(this);
 		for (const rule of this.ruleTable.keys()) {
 			if ('+*-!'.includes(rule.charAt(0))) continue;
-			const subFormat = this.dex.formats.get(rule);
+			const subFormat = this.db.formats.get(rule);
 			subFormat.onBegin?.call(this);
 		}
 
@@ -1792,7 +1792,7 @@ export class Battle {
 		format.onTeamPreview?.call(this);
 		for (const rule of this.ruleTable.keys()) {
 			if ('+*-!'.includes(rule.charAt(0))) continue;
-			const subFormat = this.dex.formats.get(rule);
+			const subFormat = this.db.formats.get(rule);
 			subFormat.onTeamPreview?.call(this);
 		}
 
@@ -1898,7 +1898,7 @@ export class Battle {
 	) {
 		if (!targetArray) return [0];
 		const retVals: (number | false | undefined)[] = [];
-		if (typeof effect === 'string' || !effect) effect = this.dex.conditions.getByID((effect || '') as ID);
+		if (typeof effect === 'string' || !effect) effect = this.db.conditions.getByID((effect || '') as ID);
 		for (const [i, curDamage] of damage.entries()) {
 			const target = targetArray[i];
 			let targetDamage = curDamage;
@@ -1932,7 +1932,7 @@ export class Battle {
 			if (targetDamage !== 0) targetDamage = this.clampIntRange(targetDamage, 1);
 
 			if (this.gen <= 1) {
-				if (this.dex.currentMod === 'gen1stadium' ||
+				if (this.db.currentMod === 'gen1stadium' ||
 					!['recoil', 'drain', 'leechseed'].includes(effect.id) && effect.effectType !== 'Status') {
 					this.lastDamage = targetDamage;
 				}
@@ -1966,7 +1966,7 @@ export class Battle {
 
 			if (targetDamage && effect.effectType === 'Move') {
 				if (this.gen <= 1 && effect.recoil && source) {
-					if (this.dex.currentMod !== 'gen1stadium' || target.hp > 0) {
+					if (this.db.currentMod !== 'gen1stadium' || target.hp > 0) {
 						const amount = this.clampIntRange(Math.floor(targetDamage * effect.recoil[0] / effect.recoil[1]), 1);
 						this.damage(amount, source, target, 'recoil');
 					}
@@ -2034,10 +2034,10 @@ export class Battle {
 		if (!damage) return 0;
 		damage = this.clampIntRange(damage, 1);
 
-		if (typeof effect === 'string' || !effect) effect = this.dex.conditions.getByID((effect || '') as ID);
+		if (typeof effect === 'string' || !effect) effect = this.db.conditions.getByID((effect || '') as ID);
 
 		// In Gen 1 BUT NOT STADIUM, Substitute also takes confusion and HJK recoil damage
-		if (this.gen <= 1 && this.dex.currentMod !== 'gen1stadium' &&
+		if (this.gen <= 1 && this.db.currentMod !== 'gen1stadium' &&
 			['confusion', 'jumpkick', 'highjumpkick'].includes(effect.id)) {
 			// Confusion and recoil damage can be countered
 			this.lastDamage = damage;
@@ -2082,7 +2082,7 @@ export class Battle {
 			source ||= this.event.source;
 			effect ||= this.effect;
 		}
-		if (effect === 'drain') effect = this.dex.conditions.getByID(effect as ID);
+		if (effect === 'drain') effect = this.db.conditions.getByID(effect as ID);
 		if (damage && damage <= 1) damage = 1;
 		damage = this.trunc(damage);
 		// for things like Liquid Ooze, the Heal event still happens when nothing is healed.
@@ -2180,8 +2180,8 @@ export class Battle {
 		// Natures are calculated with 16-bit truncation.
 		// This only affects Eternatus-Eternamax in Pure Hackmons.
 		const tr = this.trunc;
-		const nature = this.dex.natures.get(set.nature);
-		let s: StatIDExceptHP;
+		const nature = this.db.natures.get(set.nature);
+		let s: AttributeIdExceptHealth;
 		if (nature.plus) {
 			s = nature.plus;
 			const stat = this.ruleTable.has('overflowstatmod') ? Math.min(stats[s], 595) : stats[s];
@@ -2202,7 +2202,7 @@ export class Battle {
 	}
 
 	getCategory(move: string | Move) {
-		return this.dex.moves.get(move).category || 'Physical';
+		return this.db.moves.get(move).category || 'Physical';
 	}
 
 	randomizer(baseDamage: number) {
@@ -2252,7 +2252,7 @@ export class Battle {
 	}
 
 	getTarget(pokemon: Pokemon, move: string | Move, targetLoc: number, originalTarget?: Pokemon) {
-		move = this.dex.moves.get(move);
+		move = this.db.moves.get(move);
 
 		let tracksTarget = move.tracksTarget;
 		// Stalwart sets trackTarget in ModifyMove, but ModifyMove happens after getTarget, so
@@ -2310,7 +2310,7 @@ export class Battle {
 		// moves that can target either allies or foes will only target foes
 		// when used without an explicit target.
 
-		move = this.dex.moves.get(move);
+		move = this.db.moves.get(move);
 		if (['self', 'all', 'allySide', 'allyTeam', 'adjacentAllyOrSelf'].includes(move.target)) {
 			return pokemon;
 		} else if (move.target === 'adjacentAlly') {
@@ -2434,7 +2434,7 @@ export class Battle {
 			if (action.zmove) {
 				const zMoveName = this.actions.getZMove(action.move, action.pokemon, true);
 				if (zMoveName) {
-					const zMove = this.dex.getActiveMove(zMoveName);
+					const zMove = this.db.getActiveMove(zMoveName);
 					if (zMove.exists && zMove.isZ) {
 						move = zMove;
 					}
@@ -2451,7 +2451,7 @@ export class Battle {
 			}
 			// take priority from the base move, so abilities like Prankster only apply once
 			// (instead of compounding every time `getActionSpeed` is called)
-			let priority = this.dex.moves.get(move.id).priority;
+			let priority = this.db.moves.get(move.id).priority;
 			// Grassy Glide priority
 			priority = this.singleEvent('ModifyPriority', move, null, action.pokemon, null, null, priority);
 			priority = this.runEvent('ModifyPriority', action.pokemon, null, move, priority);
@@ -2483,9 +2483,9 @@ export class Battle {
 			for (const pokemon of this.getAllPokemon()) {
 				let rawSpecies: Species | null = null;
 				if (pokemon.species.id === 'zacian' && pokemon.item === 'rustedsword') {
-					rawSpecies = this.dex.species.get('Zacian-Crowned');
+					rawSpecies = this.db.species.get('Zacian-Crowned');
 				} else if (pokemon.species.id === 'zamazenta' && pokemon.item === 'rustedshield') {
-					rawSpecies = this.dex.species.get('Zamazenta-Crowned');
+					rawSpecies = this.db.species.get('Zamazenta-Crowned');
 				}
 				if (!rawSpecies) continue;
 				const species = pokemon.setSpecies(rawSpecies);
@@ -2501,7 +2501,7 @@ export class Battle {
 				};
 				const ironHead = pokemon.baseMoves.indexOf('ironhead');
 				if (ironHead >= 0) {
-					const move = this.dex.moves.get(behemothMove[rawSpecies.name]);
+					const move = this.db.moves.get(behemothMove[rawSpecies.name]);
 					pokemon.baseMoveSlots[ironHead] = {
 						move: move.name,
 						id: move.id,
@@ -2519,7 +2519,7 @@ export class Battle {
 			if (this.format.onBattleStart) this.format.onBattleStart.call(this);
 			for (const rule of this.ruleTable.keys()) {
 				if ('+*-!'.includes(rule.charAt(0))) continue;
-				const subFormat = this.dex.formats.get(rule);
+				const subFormat = this.db.formats.get(rule);
 				if (subFormat.onBattleStart) subFormat.onBattleStart.call(this);
 			}
 
@@ -2536,7 +2536,7 @@ export class Battle {
 				}
 			}
 			for (const pokemon of this.getAllPokemon()) {
-				this.singleEvent('Start', this.dex.conditions.getByID(pokemon.species.id), pokemon.speciesState, pokemon);
+				this.singleEvent('Start', this.db.conditions.getByID(pokemon.species.id), pokemon.speciesState, pokemon);
 			}
 			this.midTurn = true;
 			break;
@@ -2599,7 +2599,7 @@ export class Battle {
 		case 'instaswitch':
 		case 'switch':
 			if (action.choice === 'switch' && action.pokemon.status) {
-				this.singleEvent('CheckShow', this.dex.abilities.getByID('naturalcure' as ID), null, action.pokemon);
+				this.singleEvent('CheckShow', this.db.abilities.getByID('naturalcure' as ID), null, action.pokemon);
 			}
 			if (this.actions.switchIn(action.target, action.pokemon.position, action.sourceEffect) === 'pursuitfaint') {
 				// a pokemon fainted from Pursuit before it could switch
@@ -3028,7 +3028,7 @@ export class Battle {
 				if (this.gen === 9) newSet.teraType = set.teraType;
 				// Only display Hidden Power type if the Pokemon has Hidden Power
 				// This is based on how team sheets were written in past VGC formats
-				if (set.moves.some(m => this.dex.moves.get(m).id === 'hiddenpower')) newSet.hpType = set.hpType;
+				if (set.moves.some(m => this.db.moves.get(m).id === 'hiddenpower')) newSet.hpType = set.hpType;
 				// This is done so the client doesn't flag Zacian/Zamazenta as illusions
 				// when they use their signature move
 				if ((toID(set.species) === 'zacian' && toID(set.item) === 'rustedsword') ||

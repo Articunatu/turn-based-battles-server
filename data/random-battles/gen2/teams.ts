@@ -444,7 +444,7 @@ export class RandomGen2Teams extends RandomGen3Teams {
 				flying: {atk: 24, def: 26},
 				fighting: {atk: 24, def: 24},
 			};
-			let iv: StatID;
+			let iv: AttributeID;
 			for (iv in hpIVs[hpType]) {
 				ivs[iv] = hpIVs[hpType][iv]!;
 			}

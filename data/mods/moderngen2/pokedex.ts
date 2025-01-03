@@ -3518,7 +3518,10 @@ export const Pokedex: import('../../../sim/dex-species').ModdedSpeciesDataTable 
 		inherit: true,
 		gen: 2,
 	},
-	hydrapple: {
+	fuldraken: {
+		inherit: true,
+		gen: 2,
+	},grodan: {
 		inherit: true,
 		gen: 2,
 	},

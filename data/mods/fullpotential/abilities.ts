@@ -7,7 +7,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 			if (unawareUser === this.activePokemon && pokemon === this.activeTarget) {
 				boosts['def'] = 0;
 				boosts['spd'] = 0;
-				boosts['evasion'] = 0;
 			}
 			if (pokemon === this.activePokemon && unawareUser === this.activeTarget) {
 				boosts['atk'] = 0;
@@ -15,7 +14,6 @@ export const Abilities: import('../../../sim/dex-abilities').ModdedAbilityDataTa
 				boosts['spa'] = 0;
 				boosts['spd'] = 0;
 				boosts['spe'] = 0;
-				boosts['accuracy'] = 0;
 			}
 		},
 	},

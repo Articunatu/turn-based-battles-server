@@ -303,7 +303,7 @@ export class PokemonSources {
 
 export class TeamValidator {
 	readonly format: Format;
-	readonly dex: ModdedDex;
+	readonly dex: ModdedDb;
 	readonly gen: number;
 	readonly ruleTable: import('./dex-formats').RuleTable;
 	readonly minSourceGen: number;
@@ -506,9 +506,9 @@ export class TeamValidator {
 
 		if (ruleTable.has('obtainableformes')) {
 			const canMegaEvo = dex.gen <= 7 || ruleTable.has('+pokemontag:past');
-			if (item.megaEvolves === species.name) {
-				if (!item.megaStone) throw new Error(`Item ${item.name} has no base form for mega evolution`);
-				tierSpecies = dex.species.get(item.megaStone);
+			if (item.tranforms === species.name) {
+				if (!item.transform) throw new Error(`Item ${item.name} has no base form for mega evolution`);
+				tierSpecies = dex.species.get(item.transform);
 			} else if (item.id === 'redorb' && species.id === 'groudon') {
 				tierSpecies = dex.species.get('Groudon-Primal');
 			} else if (item.id === 'blueorb' && species.id === 'kyogre') {
@@ -1057,15 +1057,15 @@ export class TeamValidator {
 		}
 		if (set.hpType && maxedIVs && ruleTable.has('obtainablemisc')) {
 			if (dex.gen <= 2) {
-				const HPdvs = dex.types.get(set.hpType).HPdvs;
+				const HPdvs = dex.types.get(set.hpType).Healthdvs;
 				set.ivs = {hp: 30, atk: 30, def: 30, spa: 30, spd: 30, spe: 30};
-				let statName: StatID;
+				let statName: AttributeID;
 				for (statName in HPdvs) {
 					set.ivs[statName] = HPdvs[statName]! * 2;
 				}
 				set.ivs.hp = -1;
 			} else if (!canBottleCap) {
-				set.ivs = TeamValidator.fillStats(dex.types.get(set.hpType).HPivs, 31);
+				set.ivs = TeamValidator.fillStats(dex.types.get(set.hpType).Healthivs, 31);
 			}
 		}
 		if (!set.hpType && set.moves.some(m => dex.moves.get(m).id === 'hiddenpower')) {
@@ -1209,7 +1209,7 @@ export class TeamValidator {
 			}
 		} else { // EVs
 			for (const stat in set.evs) {
-				if (set.evs[stat as StatID] > 255) {
+				if (set.evs[stat as AttributeID] > 255) {
 					problems.push(`${name} has more than 255 EVs in ${Dex.stats.names[stat as 'hp']}.`);
 				}
 			}
@@ -2053,7 +2053,7 @@ export class TeamValidator {
 			const canBottleCap = dex.gen >= 7 && set.level >= (dex.gen < 9 ? 100 : 50);
 
 			if (!set.ivs) set.ivs = {hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31};
-			let statName: StatID;
+			let statName: AttributeID;
 			for (statName in eventData.ivs) {
 				if (canBottleCap && set.ivs[statName] === 31) continue;
 				if (set.ivs[statName] !== eventData.ivs[statName]) {
@@ -2080,7 +2080,7 @@ export class TeamValidator {
 			// Legendary Pokemon must have at least 3 perfect IVs in gen 6
 			// Events can also have a certain amount of guaranteed perfect IVs
 			let perfectIVs = 0;
-			let statName: StatID;
+			let statName: AttributeID;
 			for (statName in set.ivs) {
 				if (set.ivs[statName] >= 31) perfectIVs++;
 			}
@@ -2741,7 +2741,7 @@ export class TeamValidator {
 	static fillStats(stats: SparseStatsTable | null, fillNum = 0): StatsTable {
 		const filledStats: StatsTable = {hp: fillNum, atk: fillNum, def: fillNum, spa: fillNum, spd: fillNum, spe: fillNum};
 		if (stats) {
-			let statName: StatID;
+			let statName: AttributeID;
 			for (statName in filledStats) {
 				const stat = stats[statName];
 				if (typeof stat === 'number') filledStats[statName] = stat;

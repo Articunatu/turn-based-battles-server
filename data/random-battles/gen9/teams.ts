@@ -147,7 +147,7 @@ function sereneGraceBenefits(move: Move) {
 }
 
 export class RandomTeams {
-	dex: ModdedDex;
+	dex: ModdedDb;
 	gen: number;
 	factoryTier: string;
 	format: Format;
@@ -2039,7 +2039,7 @@ export class RandomTeams {
 
 			// Random EVs
 			const evs: StatsTable = {hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0};
-			const s: StatID[] = ["hp", "atk", "def", "spa", "spd", "spe"];
+			const s: AttributeID[] = ["hp", "atk", "def", "spa", "spd", "spe"];
 			let evpool = 510;
 			do {
 				const x = this.sample(s);

@@ -2,7 +2,7 @@ import {SSBSet, ssbSets} from "../../../data/mods/gen9ssb/random-teams";
 import {Utils} from "../../../lib";
 import {formatNature, STAT_NAMES} from ".";
 
-function generateSSBSet(set: SSBSet, dex: ModdedDex, baseDex: ModdedDex) {
+function generateSSBSet(set: SSBSet, dex: ModdedDb, baseDex: ModdedDb) {
 	if (set.skip) {
 		const baseSet = toID(Object.values(ssbSets[set.skip]).join());
 		const skipSet = toID(Object.values(set).join()).slice(0, -toID(set.skip).length);
@@ -19,7 +19,7 @@ function generateSSBSet(set: SSBSet, dex: ModdedDex, baseDex: ModdedDex) {
 	if (set.shiny) buf += `<li>Shiny: ${typeof set.shiny === 'number' ? `1 in ${set.shiny} chance` : `Yes`}</li>`;
 	if (set.evs) {
 		const evs: string[] = [];
-		let ev: StatID;
+		let ev: AttributeID;
 		for (ev in set.evs) {
 			if (set.evs[ev] === 0) continue;
 			evs.push(`${set.evs[ev]} ${STAT_NAMES[ev]}`);
@@ -31,7 +31,7 @@ function generateSSBSet(set: SSBSet, dex: ModdedDex, baseDex: ModdedDex) {
 	}
 	if (set.ivs) {
 		const ivs: string[] = [];
-		let iv: StatID;
+		let iv: AttributeID;
 		for (iv in set.ivs) {
 			if (set.ivs[iv] === 31) continue;
 			ivs.push(`${set.ivs[iv]} ${STAT_NAMES[iv]}`);
@@ -48,7 +48,7 @@ function generateSSBSet(set: SSBSet, dex: ModdedDex, baseDex: ModdedDex) {
 	return buf;
 }
 
-function generateSSBMoveInfo(sigMove: Move, dex: ModdedDex) {
+function generateSSBMoveInfo(sigMove: Move, dex: ModdedDb) {
 	let buf = ``;
 	if (sigMove.shortDesc || sigMove.desc) {
 		buf += `<hr />`;
@@ -139,7 +139,7 @@ function generateSSBMoveInfo(sigMove: Move, dex: ModdedDex) {
 	return buf;
 }
 
-function generateSSBItemInfo(set: SSBSet, dex: ModdedDex, baseDex: ModdedDex) {
+function generateSSBItemInfo(set: SSBSet, dex: ModdedDb, baseDex: ModdedDb) {
 	let buf = ``;
 	if (!Array.isArray(set.item)) {
 		const baseItem = baseDex.items.get(set.item);
@@ -181,7 +181,7 @@ function generateSSBItemInfo(set: SSBSet, dex: ModdedDex, baseDex: ModdedDex) {
 	return buf;
 }
 
-function generateSSBAbilityInfo(set: SSBSet, dex: ModdedDex, baseDex: ModdedDex) {
+function generateSSBAbilityInfo(set: SSBSet, dex: ModdedDb, baseDex: ModdedDb) {
 	let buf = ``;
 	if (!Array.isArray(set.ability) && !baseDex.abilities.get(set.ability).exists) {
 		const sigAbil = Dex.deepClone(dex.abilities.get(set.ability));
@@ -205,7 +205,7 @@ function generateSSBAbilityInfo(set: SSBSet, dex: ModdedDex, baseDex: ModdedDex)
 	return buf;
 }
 
-function generateSSBPokemonInfo(species: string, dex: ModdedDex, baseDex: ModdedDex) {
+function generateSSBPokemonInfo(species: string, dex: ModdedDb, baseDex: ModdedDb) {
 	let buf = ``;
 	const origSpecies = baseDex.species.get(species);
 	const newSpecies = dex.species.get(species);
@@ -280,7 +280,7 @@ function generateSSBPokemonInfo(species: string, dex: ModdedDex, baseDex: Modded
 	return buf;
 }
 
-function generateSSBInnateInfo(name: string, dex: ModdedDex, baseDex: ModdedDex) {
+function generateSSBInnateInfo(name: string, dex: ModdedDb, baseDex: ModdedDb) {
 	let buf = ``;
 	// Special casing for users whose usernames are already existing, i.e. dhelmise
 	let effect = dex.conditions.get(name + 'user');

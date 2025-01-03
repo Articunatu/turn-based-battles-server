@@ -298,9 +298,9 @@ abstract class Giveaway extends Rooms.SimpleRoomGame {
 			for (const [i, iv] of ivs.entries()) {
 				const numStr = iv.trim().split(' ')[0];
 				const statName = statNames[i];
-				convertedIVs[toID(statName) as StatID] = numStr;
+				convertedIVs[toID(statName) as AttributeID] = numStr;
 			}
-			const array = Object.keys(convertedIVs).map((x, i) => `${convertedIVs[x as StatID]} ${statNames[i]}`);
+			const array = Object.keys(convertedIVs).map((x, i) => `${convertedIVs[x as AttributeID]} ${statNames[i]}`);
 			ivsStr = `IVs: ${array.join(' / ')}  `;
 		}
 		if (ivsStr) {

@@ -88,7 +88,7 @@ if (global.Config && Config.usesqlite && Config.usesqliteleveling) {
 }
 
 export default class TeamGenerator {
-	dex: ModdedDex;
+	dex: ModdedDb;
 	format: Format;
 	teamSize: number;
 	forceLevel?: number;

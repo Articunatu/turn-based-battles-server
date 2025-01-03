@@ -58,7 +58,7 @@ export const Rulesets: import('../../../sim/dex-formats').ModdedFormatDataTable 
 			const pokemon = this.dex.deepClone(species);
 			pokemon.bst = pokemon.baseStats['hp'];
 			const boost = boosts[tier];
-			let statName: StatID;
+			let statName: AttributeID;
 			for (statName in pokemon.baseStats as StatsTable) {
 				if (statName === 'hp') continue;
 				pokemon.baseStats[statName] = this.clampIntRange(pokemon.baseStats[statName] + boost, 1, 255);
